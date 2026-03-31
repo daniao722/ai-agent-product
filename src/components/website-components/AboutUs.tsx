@@ -3,14 +3,14 @@
 import { cn } from '@/lib/utils';
 
 interface AboutUsProps {
-  companyName: string;
+  companyName?: string;
   className?: string;
   isEditable?: boolean;
   onEdit?: (key: string, value: any) => void;
 }
 
 export function AboutUs({ 
-  companyName, 
+  companyName = '数字门户', 
   className,
   isEditable = false,
   onEdit 

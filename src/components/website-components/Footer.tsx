@@ -3,14 +3,14 @@
 import { cn } from '@/lib/utils';
 
 interface FooterProps {
-  companyName: string;
+  companyName?: string;
   className?: string;
   isEditable?: boolean;
   onEdit?: (key: string, value: any) => void;
 }
 
 export function Footer({ 
-  companyName, 
+  companyName = '数字门户', 
   className,
   isEditable = false,
   onEdit 

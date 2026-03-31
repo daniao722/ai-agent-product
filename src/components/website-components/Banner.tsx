@@ -3,18 +3,18 @@
 import { cn } from '@/lib/utils';
 
 interface BannerProps {
-  title: string;
-  subtitle: string;
-  ctaText: string;
+  title?: string;
+  subtitle?: string;
+  ctaText?: string;
   className?: string;
   isEditable?: boolean;
   onEdit?: (key: string, value: any) => void;
 }
 
 export function Banner({ 
-  title, 
-  subtitle, 
-  ctaText,
+  title = '欢迎来到我们的网站', 
+  subtitle = '探索精彩内容，开启新旅程', 
+  ctaText = '立即了解',
   className,
   isEditable = false,
   onEdit 

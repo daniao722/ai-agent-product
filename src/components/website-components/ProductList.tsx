@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 
 interface ProductListProps {
-  title: string;
+  title?: string;
   className?: string;
   isEditable?: boolean;
   onEdit?: (key: string, value: any) => void;
@@ -16,7 +16,7 @@ const sampleProducts = [
 ];
 
 export function ProductList({ 
-  title, 
+  title = '我们的产品', 
   className,
   isEditable = false,
   onEdit 

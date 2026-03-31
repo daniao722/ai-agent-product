@@ -3,14 +3,14 @@
 import { cn } from '@/lib/utils';
 
 interface NavigationProps {
-  companyName: string;
+  companyName?: string;
   className?: string;
   isEditable?: boolean;
   onEdit?: (key: string, value: any) => void;
 }
 
 export function Navigation({ 
-  companyName, 
+  companyName = '数字门户', 
   className,
   isEditable = false,
   onEdit 
