@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - 关于我们</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%),
+                        url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80') center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .team-card {
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover {
+            background: #f9fafb;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding-top 0.4s ease-out;
+        }
+        .faq-answer.active {
+            max-height: 500px;
+            padding-top: 16px;
+        }
+        .faq-arrow {
+            transition: transform 0.3s ease;
+        }
+        .faq-arrow.active {
+            transform: rotate(180deg);
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 40px;
+            bottom: 40px;
+            width: 2px;
+            background: linear-gradient(180deg, #10b981 0%, #3b82f6 100%);
+            transform: translateX(-50%);
+        }
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 24px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-[70vh] flex items-center">
+        <canvas id="particle-canvas"></canvas>
+        <div class="max-w-7xl mx-auto px-6 py-24 relative z-10">
+            <p class="text-green-400 font-medium tracking-wider uppercase mb-4">所有图片仅做展示使用</p>
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">About us</h1>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Empowering Brands Through Strategic Digital Services</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-8">
+                    <div class="feature-icon mx-auto mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Web Strategy and Planning</h3>
+                    <p class="text-gray-600">Comprehensive digital strategies tailored to your unique business goals and audience needs.</p>
+                </div>
+                <div class="text-center p-8">
+                    <div class="feature-icon mx-auto mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Innovation and Execution</h3>
+                    <p class="text-gray-600">Cutting-edge solutions delivered with precision and agility for maximum impact.</p>
+                </div>
+                <div class="text-center p-8">
+                    <div class="feature-icon mx-auto mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Data-Driven Signaling</h3>
+                    <p class="text-gray-600">Analytics-powered insights that guide every decision and optimize performance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image + Text Section 1 -->
+    <section class="relative">
+        <div class="w-full h-[500px] bg-gradient-to-br from-green-50 to-green-100 relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=1920&q=80" 
+                 class="w-full h-full object-cover" alt="Nature">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/30"></div>
+        </div>
+    </section>
+
+    <!-- Excellence Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Exhibiting Outstanding Creativity</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Innovative Branding</h4>
+                                <p class="text-gray-600">Crafting unique brand identities that stand out in competitive markets.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Proven Growth Marketing</h4>
+                                <p class="text-gray-600">Data-backed strategies that drive measurable business growth.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-1">Customer-Centric Solutions</h4>
+                                <p class="text-gray-600">Putting your customers at the heart of every digital experience.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80" 
+                         class="rounded-lg shadow-lg" alt="Team">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80" 
+                         class="rounded-lg shadow-lg mt-8" alt="Collaboration">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How We Work Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How We Work</h2>
+            </div>
+            <div class="relative">
+                <div class="timeline-line hidden md:block"></div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center relative">
+                        <div class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg">
+                            01
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Discovery and Strategy</h3>
+                        <p class="text-gray-600">We dive deep into understanding your business, goals, and challenges to create a tailored strategy.</p>
+                    </div>
+                    <div class="text-center relative">
+                        <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg">
+                            02
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Design and Creation</h3>
+                        <p class="text-gray-600">Our creative team brings your vision to life with stunning designs and innovative solutions.</p>
+                    </div>
+                    <div class="text-center relative">
+                        <div class="w-16 h-16 bg-purple-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg">
+                            03
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Launch and Scaling</h3>
+                        <p class="text-gray-600">We launch your project and continue to optimize for growth and long-term success.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Introducing Our Skilled Team</h2>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="team-card bg-white rounded-xl overflow-hidden shadow-md cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" 
+                         class="w-full h-72 object-cover" alt="Team Member">
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 text-lg">Michael Chen</h4>
+                        <p class="text-gray-500">Founder & CEO</p>
+                    </div>
+                </div>
+                <div class="team-card bg-white rounded-xl overflow-hidden shadow-md cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80" 
+                         class="w-full h-72 object-cover" alt="Team Member">
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 text-lg">Sarah Johnson</h4>
+                        <p class="text-gray-500">Creative Director</p>
+                    </div>
+                </div>
+                <div class="team-card bg-white rounded-xl overflow-hidden shadow-md cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80" 
+                         class="w-full h-72 object-cover" alt="Team Member">
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 text-lg">David Park</h4>
+                        <p class="text-gray-500">Tech Lead</p>
+                    </div>
+                </div>
+                <div class="team-card bg-white rounded-xl overflow-hidden shadow-md cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80" 
+                         class="w-full h-72 object-cover" alt="Team Member">
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 text-lg">Emily Rodriguez</h4>
+                        <p class="text-gray-500">Marketing Manager</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="py-20 bg-gradient-to-br from-green-50 to-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="text-3xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-medium text-gray-800 mb-8 leading-relaxed">
+                        "Working with this team has been transformative for our business. Their strategic approach and creative solutions helped us achieve 300% growth in just 6 months."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Hear Real Stories from</h4>
+                            <p class="text-gray-600">Happy Clients</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=600&q=80" 
+                         class="rounded-2xl shadow-2xl" alt="Testimonial">
+                    <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-green-100 rounded-2xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            </div>
+            <div class="space-y-4">
+                <div class="faq-item border border-gray-200 rounded-xl p-6 cursor-pointer transition-all">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-900">What services do you offer?</h4>
+                        <svg class="faq-arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">We offer a comprehensive range of digital services including web strategy and planning, UI/UX design, web development, digital marketing, brand identity design, and ongoing support and maintenance.</p>
+                    </div>
+                </div>
+                <div class="faq-item border border-gray-200 rounded-xl p-6 cursor-pointer transition-all">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-900">How long does a typical project take?</h4>
+                        <svg class="faq-arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">Project timelines vary based on scope and complexity. A simple website typically takes 4-6 weeks, while complex web applications or full brand overhauls may require 8-12 weeks or more.</p>
+                    </div>
+                </div>
+                <div class="faq-item border border-gray-200 rounded-xl p-6 cursor-pointer transition-all">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-900">What is your pricing model?</h4>
+                        <svg class="faq-arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">We work with both fixed-price projects and hourly rates, depending on your needs. After a discovery phase, we provide a detailed proposal outlining scope, deliverables, and transparent pricing.</p>
+                    </div>
+                </div>
+                <div class="faq-item border border-gray-200 rounded-xl p-6 cursor-pointer transition-all">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-900">Do you offer ongoing support?</h4>
+                        <svg class="faq-arrow w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">Yes! We offer flexible ongoing support packages that include maintenance, updates, security monitoring, and performance optimization to keep your digital presence running smoothly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="bg-gray-900 text-white py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80" 
+                         class="rounded-2xl shadow-2xl" alt="Contact us">
+                </div>
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">We'd Love to Hear From You</h2>
+                    <p class="text-gray-400 mb-8">Get in touch with our team to discuss your project and how we can help bring your vision to life.</p>
+                    <form class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                            <input type="text" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white" placeholder="Your name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                            <input type="email" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white" placeholder="your@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white resize-none" placeholder="Tell us about your project..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="mb-4 md:mb-0">© 2024 Company Name. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
+                    <a href="#" class="hover:text-white transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Particle Wave Effect for Hero Banner
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.hue = 140 + Math.random() * 40;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 70%, 60%, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(Math.floor((canvas.width * canvas.height) / 15000), 80);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        const opacity = (1 - distance / 150) * 0.3;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `hsla(160, 60%, 50%, ${opacity})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let particle of particles) {
+                particle.update();
+                particle.draw();
+            }
+
+            connectParticles();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        resizeCanvas();
+        initParticles();
+        animate();
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        // FAQ Accordion Effect
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const answer = item.querySelector('.faq-answer');
+                const arrow = item.querySelector('.faq-arrow');
+                const isActive = answer.classList.contains('active');
+                
+                faqItems.forEach(otherItem => {
+                    const otherAnswer = otherItem.querySelector('.faq-answer');
+                    const otherArrow = otherItem.querySelector('.faq-arrow');
+                    otherAnswer.classList.remove('active');
+                    otherArrow.classList.remove('active');
+                });
+                
+                if (!isActive) {
+                    answer.classList.add('active');
+                    arrow.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
