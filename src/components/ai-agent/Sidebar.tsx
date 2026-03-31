@@ -8,7 +8,7 @@ interface MenuItem {
 
 interface SidebarProps {
   activePage: string;
-  setActivePage: (page: string) => void;
+  setActivePage: (page: any) => void;
   menuItems: MenuItem[];
 }
 

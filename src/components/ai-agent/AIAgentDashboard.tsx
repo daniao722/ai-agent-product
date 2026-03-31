@@ -14,7 +14,7 @@ type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings';
 
 export default function AIAgentDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('ai-agent');
-  const [activePage, setActivePage] = useState<ActivePage>('overview');
+  const [activePage, setActivePage] = useState<string>('overview');
 
   const menuItems = [
     { id: 'overview' as ActivePage, icon: '📊', label: '概览' },
