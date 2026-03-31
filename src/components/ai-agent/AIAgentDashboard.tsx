@@ -17,11 +17,11 @@ export default function AIAgentDashboard() {
   const [activePage, setActivePage] = useState<string>('overview');
 
   const menuItems = [
-    { id: 'overview' as ActivePage, icon: '📊', label: '概览' },
-    { id: 'knowledge' as ActivePage, icon: '🧠', label: '知识库' },
-    { id: 'chat' as ActivePage, icon: '💬', label: '对话' },
-    { id: 'tasks' as ActivePage, icon: '📋', label: '任务中心' },
-    { id: 'settings' as ActivePage, icon: '⚙️', label: '设置' },
+    { id: 'overview', icon: '📊', label: '概览' },
+    { id: 'knowledge', icon: '🧠', label: '知识库' },
+    { id: 'chat', icon: '💬', label: '对话' },
+    { id: 'tasks', icon: '📋', label: '任务中心' },
+    { id: 'settings', icon: '⚙️', label: '设置' },
   ];
 
   const renderPage = () => {
