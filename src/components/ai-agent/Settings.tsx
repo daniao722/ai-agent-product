@@ -10,107 +10,6 @@ export default function Settings() {
   const [defaultView, setDefaultView] = useState('ai-agent');
   const [theme, setTheme] = useState('light');
 
-  const settingsSections = [
-    {
-      title: 'AI助手设置',
-      icon: '🤖',
-      items: [
-        {
-          label: '自动数据分析',
-          description: '定期自动分析网站运营数据',
-          type: 'toggle',
-          value: autoAnalysis,
-          onChange: setAutoAnalysis,
-        },
-        {
-          label: '分析频率',
-          description: '设置自动数据分析的频率',
-          type: 'select',
-          value: analysisFrequency,
-          onChange: setAnalysisFrequency,
-          options: [
-            { label: '每天', value: 'daily' },
-            { label: '每周', value: 'weekly' },
-            { label: '每月', value: 'monthly' },
-          ],
-        },
-        {
-          label: '自动执行任务',
-          description: '经用户确认后自动执行优化任务',
-          type: 'toggle',
-          value: autoExecute,
-          onChange: setAutoExecute,
-        },
-        {
-          label: '语言偏好',
-          description: '设置AI助手的交互语言',
-          type: 'select',
-          value: language,
-          onChange: setLanguage,
-          options: [
-            { label: '中文', value: 'zh' },
-            { label: 'English', value: 'en' },
-            { label: '日本語', value: 'ja' },
-          ],
-        },
-      ],
-    },
-    {
-      title: '知识库设置',
-      icon: '🧠',
-      items: [
-        {
-          label: '自动学习',
-          description: '自动从网站更新中学习新知识',
-          type: 'toggle',
-          value: autoLearning,
-          onChange: setAutoLearning,
-        },
-        {
-          label: '学习频率',
-          description: '设置自动学习的频率',
-          type: 'select',
-          value: learningFrequency,
-          onChange: setLearningFrequency,
-          options: [
-            { label: '每天', value: 'daily' },
-            { label: '每周', value: 'weekly' },
-            { label: '每月', value: 'monthly' },
-          ],
-        },
-      ],
-    },
-    {
-      title: '视图设置',
-      icon: '👁️',
-      items: [
-        {
-          label: '默认视图',
-          description: '设置登录后默认显示的视图',
-          type: 'select',
-          value: defaultView,
-          onChange: setDefaultView,
-          options: [
-            { label: 'AI Agent视图', value: 'ai-agent' },
-            { label: '普通视图', value: 'normal' },
-          ],
-        },
-        {
-          label: '界面主题',
-          description: '选择您喜欢的界面主题',
-          type: 'select',
-          value: theme,
-          onChange: setTheme,
-          options: [
-            { label: '浅色', value: 'light' },
-            { label: '深色', value: 'dark' },
-            { label: '跟随系统', value: 'system' },
-          ],
-        },
-      ],
-    },
-  ];
-
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
@@ -118,53 +17,181 @@ export default function Settings() {
         <p className="text-gray-600 mt-1">配置AI Agent和系统偏好</p>
       </div>
 
-      {settingsSections.map((section, sectionIndex) => (
-        <div key={sectionIndex} className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-2xl">{section.icon}</span>
-            <h2 className="text-lg font-semibold text-gray-900">{section.title}</h2>
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-2xl">🤖</span>
+          <h2 className="text-lg font-semibold text-gray-900">AI助手设置</h2>
+        </div>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">自动数据分析</h3>
+              <p className="text-sm text-gray-500">定期自动分析网站运营数据</p>
+            </div>
+            <div className="ml-8">
+              <button
+                onClick={() => setAutoAnalysis(!autoAnalysis)}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  autoAnalysis ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    autoAnalysis ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
-          <div className="space-y-6">
-            {section.items.map((item, itemIndex) => (
-              <div key={itemIndex} className="flex items-center justify-between">
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-900">{item.label}</h3>
-                  <p className="text-sm text-gray-500">{item.description}</p>
-                </div>
-                <div className="ml-8">
-                  {item.type === 'toggle' && (
-                    <button
-                      onClick={() => item.onChange(!item.value)}
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        item.value ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gray-200'
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                          item.value ? 'translate-x-5' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
-                  )}
-                  {item.type === 'select' && item.options && (
-                    <select
-                      value={item.value}
-                      onChange={(e) => item.onChange(e.target.value)}
-                      className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
-                    >
-                      {item.options.map((option, optIndex) => (
-                        <option key={optIndex} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-              </div>
-            ))}
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">分析频率</h3>
+              <p className="text-sm text-gray-500">设置自动数据分析的频率</p>
+            </div>
+            <div className="ml-8">
+              <select
+                value={analysisFrequency}
+                onChange={(e) => setAnalysisFrequency(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              >
+                <option value="daily">每天</option>
+                <option value="weekly">每周</option>
+                <option value="monthly">每月</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">自动执行任务</h3>
+              <p className="text-sm text-gray-500">经用户确认后自动执行优化任务</p>
+            </div>
+            <div className="ml-8">
+              <button
+                onClick={() => setAutoExecute(!autoExecute)}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  autoExecute ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    autoExecute ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">语言偏好</h3>
+              <p className="text-sm text-gray-500">设置AI助手的交互语言</p>
+            </div>
+            <div className="ml-8">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              >
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+              </select>
+            </div>
           </div>
         </div>
-      ))}
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-2xl">🧠</span>
+          <h2 className="text-lg font-semibold text-gray-900">知识库设置</h2>
+        </div>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">自动学习</h3>
+              <p className="text-sm text-gray-500">自动从网站更新中学习新知识</p>
+            </div>
+            <div className="ml-8">
+              <button
+                onClick={() => setAutoLearning(!autoLearning)}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  autoLearning ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    autoLearning ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">学习频率</h3>
+              <p className="text-sm text-gray-500">设置自动学习的频率</p>
+            </div>
+            <div className="ml-8">
+              <select
+                value={learningFrequency}
+                onChange={(e) => setLearningFrequency(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              >
+                <option value="daily">每天</option>
+                <option value="weekly">每周</option>
+                <option value="monthly">每月</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-2xl">👁️</span>
+          <h2 className="text-lg font-semibold text-gray-900">视图设置</h2>
+        </div>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">默认视图</h3>
+              <p className="text-sm text-gray-500">设置登录后默认显示的视图</p>
+            </div>
+            <div className="ml-8">
+              <select
+                value={defaultView}
+                onChange={(e) => setDefaultView(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              >
+                <option value="ai-agent">AI Agent视图</option>
+                <option value="normal">普通视图</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-gray-900">界面主题</h3>
+              <p className="text-sm text-gray-500">选择您喜欢的界面主题</p>
+            </div>
+            <div className="ml-8">
+              <select
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+              >
+                <option value="light">浅色</option>
+                <option value="dark">深色</option>
+                <option value="system">跟随系统</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="flex items-center justify-between bg-white rounded-xl shadow-sm p-6">
         <div>
