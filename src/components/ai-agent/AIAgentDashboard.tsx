@@ -8,13 +8,17 @@ import KnowledgeBase from './KnowledgeBase';
 import Chat from './Chat';
 import Tasks from './Tasks';
 import Settings from './Settings';
+import AgentDetail from './AgentDetail';
+import AgentConfig from './AgentConfig';
+import { Agent, AGENTS } from '@/types/agent';
 
 type ViewMode = 'normal' | 'ai-agent';
-type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings';
+type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config';
 
 export default function AIAgentDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('ai-agent');
   const [activePage, setActivePage] = useState<string>('overview');
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
 
   const menuItems = [
     { id: 'overview', icon: '📊', label: '概览' },
@@ -24,10 +28,24 @@ export default function AIAgentDashboard() {
     { id: 'settings', icon: '⚙️', label: '设置' },
   ];
 
+  const handleAgentClick = (agent: Agent) => {
+    setSelectedAgent(agent);
+    setActivePage('agent-detail');
+  };
+
+  const handleGoToConfig = () => {
+    setActivePage('agent-config');
+  };
+
+  const handleBackToOverview = () => {
+    setSelectedAgent(null);
+    setActivePage('overview');
+  };
+
   const renderPage = () => {
     switch (activePage) {
       case 'overview':
-        return <Overview />;
+        return <Overview onAgentClick={handleAgentClick} />;
       case 'knowledge':
         return <KnowledgeBase />;
       case 'chat':
@@ -36,8 +54,23 @@ export default function AIAgentDashboard() {
         return <Tasks />;
       case 'settings':
         return <Settings />;
+      case 'agent-detail':
+        return selectedAgent && (
+          <AgentDetail
+            agent={selectedAgent}
+            onBack={handleBackToOverview}
+            onGoToConfig={handleGoToConfig}
+          />
+        );
+      case 'agent-config':
+        return selectedAgent && (
+          <AgentConfig
+            agent={selectedAgent}
+            onBack={handleBackToOverview}
+          />
+        );
       default:
-        return <Overview />;
+        return <Overview onAgentClick={handleAgentClick} />;
     }
   };
 
