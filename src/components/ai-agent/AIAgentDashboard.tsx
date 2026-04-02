@@ -10,18 +10,20 @@ import Tasks from './Tasks';
 import Settings from './Settings';
 import AgentDetail from './AgentDetail';
 import AgentConfig from './AgentConfig';
+import ValueChainOverview from './ValueChainOverview';
 import { Agent, AGENTS } from '@/types/agent';
 
 type ViewMode = 'normal' | 'ai-agent';
-type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config';
+type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config' | 'value-chain';
 
 export default function AIAgentDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('ai-agent');
-  const [activePage, setActivePage] = useState<string>('overview');
+  const [activePage, setActivePage] = useState<string>('value-chain');
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
 
   const menuItems = [
-    { id: 'overview', icon: '📊', label: '概览' },
+    { id: 'value-chain', icon: '🔗', label: '业务价值链' },
+    { id: 'overview', icon: '📊', label: 'AI Agent' },
     { id: 'knowledge', icon: '🧠', label: '知识库' },
     { id: 'chat', icon: '💬', label: '对话' },
     { id: 'tasks', icon: '📋', label: '任务中心' },
@@ -44,6 +46,8 @@ export default function AIAgentDashboard() {
 
   const renderPage = () => {
     switch (activePage) {
+      case 'value-chain':
+        return <ValueChainOverview />;
       case 'overview':
         return <Overview onAgentClick={handleAgentClick} />;
       case 'knowledge':
@@ -70,7 +74,7 @@ export default function AIAgentDashboard() {
           />
         );
       default:
-        return <Overview onAgentClick={handleAgentClick} />;
+        return <ValueChainOverview />;
     }
   };
 
