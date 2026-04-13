@@ -11,6 +11,7 @@ import Settings from './Settings';
 import AgentDetail from './AgentDetail';
 import AgentConfig from './AgentConfig';
 import ValueChainOverview from './ValueChainOverview';
+import LaunchChecklistWidget from './LaunchChecklistWidget';
 import { Agent, AGENTS } from '@/types/agent';
 
 type ViewMode = 'normal' | 'ai-agent';
@@ -164,6 +165,8 @@ export default function AIAgentDashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {viewMode === 'ai-agent' && <LaunchChecklistWidget />}
     </div>
   );
 }
