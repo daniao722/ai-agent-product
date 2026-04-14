@@ -11,18 +11,19 @@ import Settings from './Settings';
 import AgentDetail from './AgentDetail';
 import AgentConfig from './AgentConfig';
 import ValueChainOverview from './ValueChainOverview';
-import LaunchChecklistWidget from './LaunchChecklistWidget';
+import OperationGuide from './OperationGuide';
 import { Agent, AGENTS } from '@/types/agent';
 
 type ViewMode = 'normal' | 'ai-agent';
-type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config' | 'value-chain';
+type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config' | 'value-chain' | 'operation-guide';
 
 export default function AIAgentDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('ai-agent');
-  const [activePage, setActivePage] = useState<string>('value-chain');
+  const [activePage, setActivePage] = useState<string>('operation-guide');
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
 
   const menuItems = [
+    { id: 'operation-guide', icon: '🚀', label: '运营引导' },
     { id: 'value-chain', icon: '🔗', label: '业务价值链' },
     { id: 'overview', icon: '📊', label: 'AI Agent' },
     { id: 'knowledge', icon: '🧠', label: '知识库' },
@@ -47,6 +48,8 @@ export default function AIAgentDashboard() {
 
   const renderPage = () => {
     switch (activePage) {
+      case 'operation-guide':
+        return <OperationGuide />;
       case 'value-chain':
         return <ValueChainOverview />;
       case 'overview':
@@ -75,7 +78,7 @@ export default function AIAgentDashboard() {
           />
         );
       default:
-        return <ValueChainOverview />;
+        return <OperationGuide />;
     }
   };
 
@@ -165,8 +168,6 @@ export default function AIAgentDashboard() {
           </motion.div>
         )}
       </AnimatePresence>
-      
-      {viewMode === 'ai-agent' && <LaunchChecklistWidget />}
     </div>
   );
 }
