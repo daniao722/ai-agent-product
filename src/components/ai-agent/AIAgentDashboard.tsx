@@ -3,20 +3,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from './Sidebar';
-import Overview from './Overview';
 import KnowledgeBase from './KnowledgeBase';
 import Chat from './Chat';
 import Tasks from './Tasks';
 import Settings from './Settings';
 import AgentDetail from './AgentDetail';
 import AgentConfig from './AgentConfig';
-import ValueChainOverview from './ValueChainOverview';
 import OperationGuide from './OperationGuide';
 import ValueDashboard from './ValueDashboard';
-import { Agent, AGENTS } from '@/types/agent';
+import { Agent, AGENTS_DATA } from '@/types/agent';
 
 type ViewMode = 'normal' | 'ai-agent';
-type ActivePage = 'overview' | 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config' | 'value-chain' | 'operation-guide' | 'value-dashboard';
+type ActivePage = 'knowledge' | 'chat' | 'tasks' | 'settings' | 'agent-detail' | 'agent-config' | 'operation-guide' | 'value-dashboard';
 
 export default function AIAgentDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('ai-agent');
@@ -26,8 +24,6 @@ export default function AIAgentDashboard() {
   const menuItems = [
     { id: 'value-dashboard', icon: '🚀', label: '数智增长' },
     { id: 'operation-guide', icon: '✅', label: '运营引导' },
-    { id: 'value-chain', icon: '🔗', label: '业务价值链' },
-    { id: 'overview', icon: '📊', label: 'AI Agent' },
     { id: 'knowledge', icon: '🧠', label: '知识库' },
     { id: 'chat', icon: '💬', label: '对话' },
     { id: 'tasks', icon: '📋', label: '任务中心' },
@@ -45,19 +41,15 @@ export default function AIAgentDashboard() {
 
   const handleBackToOverview = () => {
     setSelectedAgent(null);
-    setActivePage('overview');
+    setActivePage('value-dashboard');
   };
 
   const renderPage = () => {
     switch (activePage) {
       case 'value-dashboard':
-        return <ValueDashboard />;
+        return <ValueDashboard onAgentClick={handleAgentClick} />;
       case 'operation-guide':
         return <OperationGuide />;
-      case 'value-chain':
-        return <ValueChainOverview />;
-      case 'overview':
-        return <Overview onAgentClick={handleAgentClick} />;
       case 'knowledge':
         return <KnowledgeBase />;
       case 'chat':
@@ -82,7 +74,7 @@ export default function AIAgentDashboard() {
           />
         );
       default:
-        return <ValueDashboard />;
+        return <ValueDashboard onAgentClick={handleAgentClick} />;
     }
   };
 

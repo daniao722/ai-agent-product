@@ -16,7 +16,7 @@ const skills = [
 ];
 
 export default function AgentConfig({ agent, onBack }: AgentConfigProps) {
-  const [enabled, setEnabled] = useState(agent.enabled);
+  const [enabled, setEnabled] = useState(true);
   const [agentName, setAgentName] = useState(agent.name);
   const [workMode, setWorkMode] = useState('auto');
   const [workTimeStart, setWorkTimeStart] = useState('08:00');
@@ -56,7 +56,7 @@ export default function AgentConfig({ agent, onBack }: AgentConfigProps) {
 
   const handleReset = () => {
     if (confirm('确定要重置为默认配置吗？')) {
-      setEnabled(agent.enabled);
+      setEnabled(true);
       setAgentName(agent.name);
       setWorkMode('auto');
       setWorkTimeStart('08:00');

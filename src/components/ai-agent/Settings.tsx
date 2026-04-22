@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { AGENTS, Agent } from '@/types/agent';
+import { AGENTS_DATA, Agent } from '@/types/agent';
 
 type SettingsView = 'general' | 'agents' | 'knowledge' | 'view';
 
+interface AgentWithEnabled extends Agent {
+  enabled: boolean;
+}
+
 export default function Settings() {
   const [currentView, setCurrentView] = useState<SettingsView>('agents');
-  const [agents, setAgents] = useState<Agent[]>(AGENTS);
+  const [agents, setAgents] = useState<AgentWithEnabled[]>(AGENTS_DATA.map(a => ({ ...a, enabled: true })));
   const [autoAnalysis, setAutoAnalysis] = useState(true);
   const [analysisFrequency, setAnalysisFrequency] = useState('daily');
   const [autoExecute, setAutoExecute] = useState(false);
@@ -41,7 +45,7 @@ export default function Settings() {
             <span className="text-2xl">🤖</span>
             <div>
               <h2 className="text-lg font-semibold text-gray-900">集成Agent列表</h2>
-              <p className="text-sm text-gray-500">{agents.filter(a => a.enabled).length}/10 已启用</p>
+              <p className="text-sm text-gray-500">{agents.filter(a => a.enabled).length}/6 已启用</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -60,14 +64,16 @@ export default function Settings() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {agents.map((agent) => (
             <div
               key={agent.id}
               className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-4">
-                <span className="text-3xl">{agent.icon}</span>
+                <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center text-white text-2xl`}>
+                  {agent.icon}
+                </div>
                 <div>
                   <div className="font-medium text-gray-900">{agent.name}</div>
                   <div className="text-sm text-gray-500">{agent.description}</div>

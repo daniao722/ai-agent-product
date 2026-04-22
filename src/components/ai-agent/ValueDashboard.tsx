@@ -2,17 +2,62 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { AGENTS_DATA, VALUE_METRICS, BUSINESS_DATA, AgentData, ValueMetric } from '@/types/value-dashboard';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  FunnelChart,
+  Funnel,
+  LabelList
+} from 'recharts';
+import AgentCard from './AgentCard';
+import { AGENTS_DATA, VALUE_METRICS, BUSINESS_DATA, Agent } from '@/types/agent';
 
-export default function ValueDashboard() {
-  const [selectedAgent, setSelectedAgent] = useState<AgentData | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'agents' | 'value'>('overview');
+const trafficData = Array.from({ length: 30 }, (_, i) => ({
+  date: `3/${i + 1}`,
+  uv: Math.floor(Math.random() * 500) + 1000,
+  pv: Math.floor(Math.random() * 1000) + 2000,
+}));
+
+const keywordData = [
+  { keyword: '工业自动化设备', rank: 3, change: 'up', traffic: 1250, landingPage: '/products/automation' },
+  { keyword: '智能机器人', rank: 7, change: 'up', traffic: 890, landingPage: '/products/robots' },
+  { keyword: '工业机器人', rank: 12, change: 'down', traffic: 654, landingPage: '/products/industrial' },
+  { keyword: '智能工厂解决方案', rank: 15, change: 'up', traffic: 520, landingPage: '/solutions/factory' },
+  { keyword: '工业4.0设备', rank: 18, change: 'same', traffic: 410, landingPage: '/solutions/industry4' },
+];
+
+const funnelData = [
+  { name: '访客', value: 15000, fill: '#6366f1' },
+  { name: '浏览', value: 8500, fill: '#8b5cf6' },
+  { name: '咨询', value: 2300, fill: '#a855f7' },
+  { name: '留资', value: 780, fill: '#c084fc' },
+  { name: '线索', value: 230, fill: '#d8b4fe' },
+];
+
+type ViewMode = 'overview' | 'agents' | 'value';
+
+export default function ValueDashboard({ onAgentClick }: { onAgentClick?: (agent: Agent) => void }) {
+  const [language, setLanguage] = useState('zh');
+  const [viewMode, setViewMode] = useState<ViewMode>('overview');
+  const [selectedAgent, setSelectedAgent] = useState<any>(null);
+  
+  const handleAgentClick = (agent: Agent) => {
+    if (onAgentClick) {
+      onAgentClick(agent);
+    }
+  };
 
   const frontAgents = AGENTS_DATA.filter(a => a.position === 'front');
   const backAgents = AGENTS_DATA.filter(a => a.position === 'back');
 
-  const getCategoryColor = (category: ValueMetric['category']) => {
+  const getCategoryColor = (category: string) => {
     switch (category) {
       case 'cost':
         return 'from-red-500 to-pink-600';
@@ -25,7 +70,7 @@ export default function ValueDashboard() {
     }
   };
 
-  const getCategoryIcon = (category: ValueMetric['category']) => {
+  const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'cost':
         return '💰';
@@ -38,7 +83,7 @@ export default function ValueDashboard() {
     }
   };
 
-  const getStatusColor = (status: AgentData['status']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
         return 'bg-green-500';
@@ -51,87 +96,197 @@ export default function ValueDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">🚀 数智增长仪表盘</h1>
-          <p className="text-gray-600 mt-1">从"数字化建设者"到"数智增长合伙人"的完整价值链条</p>
-        </div>
-        <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-          {[
-            { id: 'overview', label: '数据概览', icon: '📊' },
-            { id: 'agents', label: 'AI团队', icon: '🤖' },
-            { id: 'value', label: '价值成果', icon: '🎯' },
-          ].map((tab) => (
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                数字门户全球营销版 v2.1.0
+              </span>
+            </div>
+            <h1 className="text-2xl font-bold mb-1">科技有限公司</h1>
+            <p className="text-white/80 mb-3">www.example.com</p>
+            <div className="flex items-center gap-4 text-sm">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                运行中
+              </span>
+              <span>有效期: 2026-12-31</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 ${
-                activeTab === tab.id
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+              className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors"
             >
-              <span>{tab.icon}</span>
-              {tab.label}
+              <span>🌐</span>
+              <span className="text-sm">{language === 'zh' ? '中文' : 'EN'}</span>
             </button>
-          ))}
+          </div>
         </div>
       </div>
 
-      {activeTab === 'overview' && (
+      <div className="flex items-center gap-2 bg-white rounded-xl shadow-sm p-1">
+        <button
+          onClick={() => setViewMode('overview')}
+          className={`flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-all ${
+            viewMode === 'overview'
+              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          📊 数据概览
+        </button>
+        <button
+          onClick={() => setViewMode('agents')}
+          className={`flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-all ${
+            viewMode === 'agents'
+              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          🤖 AI团队
+        </button>
+        <button
+          onClick={() => setViewMode('value')}
+          className={`flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-all ${
+            viewMode === 'value'
+              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          🎯 价值成果
+        </button>
+      </div>
+
+      {viewMode === 'overview' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { 
-                label: '月度营收', 
-                value: `¥${(BUSINESS_DATA.revenue.current / 10000).toFixed(0)}万`,
-                change: `+${BUSINESS_DATA.revenue.growth}%`,
-                icon: '💰',
-                color: 'from-green-500 to-emerald-600'
-              },
-              { 
-                label: '本月线索', 
-                value: BUSINESS_DATA.leads.current,
-                change: `+${BUSINESS_DATA.leads.growth}%`,
-                icon: '🎯',
-                color: 'from-blue-500 to-cyan-600'
-              },
-              { 
-                label: '转化率', 
-                value: `${BUSINESS_DATA.conversion.rate}%`,
-                change: `+${BUSINESS_DATA.conversion.improvement}%`,
-                icon: '📈',
-                color: 'from-purple-500 to-violet-600'
-              },
-              { 
-                label: '响应时间', 
-                value: BUSINESS_DATA.responseTime.current,
-                change: BUSINESS_DATA.responseTime.improvement,
-                icon: '⚡',
-                color: 'from-orange-500 to-amber-600'
-              },
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-xl shadow-sm p-6"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-2xl`}>
-                    {stat.icon}
-                  </span>
-                  <span className="text-green-600 text-sm font-medium">{stat.change}</span>
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-gray-500 text-sm">内容发布</span>
+                <span className="text-green-500 text-sm font-medium">+12%</span>
+              </div>
+              <div className="text-3xl font-bold text-gray-900">156</div>
+              <div className="text-sm text-gray-500 mt-1">本周发布</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-gray-500 text-sm">页面总数</span>
+              </div>
+              <div className="text-3xl font-bold text-gray-900">328</div>
+              <div className="text-sm text-gray-500 mt-1">活跃页面</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-gray-500 text-sm">百度收录</span>
+                <span className="text-blue-500 text-sm font-medium">+8%</span>
+              </div>
+              <div className="text-3xl font-bold text-gray-900">215</div>
+              <div className="text-sm text-gray-500 mt-1">已收录页面</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-gray-500 text-sm">Google收录</span>
+                <span className="text-green-500 text-sm font-medium">+15%</span>
+              </div>
+              <div className="text-3xl font-bold text-gray-900">189</div>
+              <div className="text-sm text-gray-500 mt-1">已收录页面</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">网站流量趋势（近30天）</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={trafficData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                    <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '8px' }}
+                    />
+                    <Line type="monotone" dataKey="uv" stroke="#6366f1" strokeWidth={2} dot={false} name="UV" />
+                    <Line type="monotone" dataKey="pv" stroke="#8b5cf6" strokeWidth={2} dot={false} name="PV" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">智能客服接待数据</h3>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">128</div>
+                    <div className="text-sm text-gray-600">今日接待</div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">35%</div>
+                    <div className="text-sm text-gray-600">留资率</div>
+                  </div>
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">12%</div>
+                    <div className="text-sm text-gray-600">转化率</div>
+                  </div>
                 </div>
-                <div className="text-gray-500 text-sm mb-1">{stat.label}</div>
-                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-              </motion.div>
-            ))}
+                <div className="text-sm text-gray-500">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                    热门问题: "产品价格是多少？"
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">流量到线索转化漏斗</h3>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <FunnelChart>
+                      <Funnel data={funnelData} dataKey="value">
+                        <LabelList position="right" fill="#fff" stroke="none" dataKey="name" />
+                        <LabelList position="center" fill="#fff" stroke="none" dataKey="value" fontSize={14} fontWeight="bold" />
+                      </Funnel>
+                      <Tooltip />
+                    </FunnelChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">关键词排名 TOP10</h3>
+            <div className="space-y-3">
+              {keywordData.map((item, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400 font-medium w-6">#{index + 1}</span>
+                    <div>
+                      <div className="font-medium text-gray-900">{item.keyword}</div>
+                      <div className="text-xs text-gray-500">落地页: {item.landingPage}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">#{item.rank}</div>
+                      <div className="text-xs text-gray-500">{item.traffic} 流量</div>
+                    </div>
+                    <span className={`text-lg ${
+                      item.change === 'up' ? 'text-green-500' : 
+                      item.change === 'down' ? 'text-red-500' : 'text-gray-400'
+                    }`}>
+                      {item.change === 'up' ? '↑' : item.change === 'down' ? '↓' : '→'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -160,8 +315,8 @@ export default function ValueDashboard() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">🤖 4+2 AI 智能团队</h3>
-              <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">🤖 4+2 AI智能团队</h3>
+              <div className="space-y-6">
                 <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-lg">🎯</span>
@@ -169,21 +324,21 @@ export default function ValueDashboard() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {frontAgents.map((agent, idx) => (
-                      <div key={agent.id} className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center text-white text-sm`}>
-                          {agent.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 truncate">{agent.name}</div>
-                          <div className="flex items-center gap-1">
-                            <span className={`w-2 h-2 rounded-full ${getStatusColor(agent.status)}`}></span>
-                            <span className="text-xs text-gray-500">
-                              {agent.status === 'active' ? '在线' : agent.status === 'working' ? '工作中' : '空闲'}
-                            </span>
-                          </div>
+                    <div key={agent.id} className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center text-white text-sm`}>
+                        {agent.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 truncate">{agent.name}</div>
+                        <div className="flex items-center gap-1">
+                          <span className={`w-2 h-2 rounded-full ${getStatusColor(agent.status)}`}></span>
+                          <span className="text-xs text-gray-500">
+                            {agent.status === 'active' ? '在线' : agent.status === 'working' ? '工作中' : '空闲'}
+                          </span>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
                   </div>
                 </div>
 
@@ -194,21 +349,21 @@ export default function ValueDashboard() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {backAgents.map((agent, idx) => (
-                      <div key={agent.id} className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center text-white text-sm`}>
-                          {agent.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 truncate">{agent.name}</div>
-                          <div className="flex items-center gap-1">
-                            <span className={`w-2 h-2 rounded-full ${getStatusColor(agent.status)}`}></span>
-                            <span className="text-xs text-gray-500">
-                              {agent.status === 'active' ? '在线' : agent.status === 'working' ? '工作中' : '空闲'}
-                            </span>
-                          </div>
+                    <div key={agent.id} className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center text-white text-sm`}>
+                        {agent.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 truncate">{agent.name}</div>
+                        <div className="flex items-center gap-1">
+                          <span className={`w-2 h-2 rounded-full ${getStatusColor(agent.status)}`}></span>
+                          <span className="text-xs text-gray-500">
+                            {agent.status === 'active' ? '在线' : agent.status === 'working' ? '工作中' : '空闲'}
+                          </span>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
                   </div>
                 </div>
               </div>
@@ -217,146 +372,48 @@ export default function ValueDashboard() {
         </motion.div>
       )}
 
-      {activeTab === 'agents' && (
+      {viewMode === 'agents' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {AGENTS_DATA.map((agent, idx) => (
-              <motion.div
-                key={agent.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                onClick={() => setSelectedAgent(agent)}
-                className="cursor-pointer"
-              >
-                <div className={`bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all border-2 border-transparent hover:border-indigo-200 ${
-                  selectedAgent?.id === agent.id ? 'border-indigo-500 shadow-lg' : ''
-                }`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${agent.color} flex items-center justify-center text-3xl shadow-lg`}>
-                        {agent.icon}
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-900">{agent.name}</h3>
-                        <p className="text-sm text-gray-500">{agent.description}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`w-3 h-3 rounded-full ${getStatusColor(agent.status)}`}></span>
-                      <span className="text-sm text-gray-600">
-                        {agent.status === 'active' ? '在线' : agent.status === 'working' ? '工作中' : '空闲'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    {agent.metrics.map((metric, mIdx) => (
-                      <div key={mIdx} className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="text-lg font-bold text-gray-900">{metric.value}{metric.unit}</div>
-                        <div className="text-xs text-gray-500 mt-1">{metric.name}</div>
-                        {metric.change && (
-                          <div className={`text-xs mt-1 ${metric.changeType === 'positive' ? 'text-green-600' : metric.changeType === 'negative' ? 'text-red-600' : 'text-gray-500'}`}>
-                            {metric.change}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">最近活动</h4>
-                    <div className="space-y-2">
-                      {agent.recentActivities.slice(0, 2).map((activity, aIdx) => (
-                        <div key={aIdx} className="flex items-start gap-2 text-sm">
-                          <span className="text-gray-400">•</span>
-                          <span className="text-gray-600">{activity.action}</span>
-                          <span className="text-gray-400 ml-auto">{activity.time}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {selectedAgent && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-            >
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedAgent(null)} />
-              <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
-                <div className={`p-6 bg-gradient-to-r ${selectedAgent.color}`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center text-4xl">
-                        {selectedAgent.icon}
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-white">{selectedAgent.name}</h2>
-                        <p className="text-white/80">{selectedAgent.description}</p>
-                      </div>
-                    </div>
-                    <button onClick={() => setSelectedAgent(null)} className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg">
-                      ✕
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">核心指标</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      {selectedAgent.metrics.map((metric, idx) => (
-                        <div key={idx} className="p-4 bg-gray-50 rounded-xl text-center">
-                          <div className="text-2xl font-bold text-gray-900">{metric.value}{metric.unit}</div>
-                          <div className="text-sm text-gray-600 mt-1">{metric.name}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">关键职责</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      {selectedAgent.keyResponsibilities.map((resp, idx) => (
-                        <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-                          <span className="text-indigo-500">✓</span>
-                          <span className="text-gray-700">{resp}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">最近活动</h3>
-                    <div className="space-y-3">
-                      {selectedAgent.recentActivities.map((activity, idx) => (
-                        <div key={idx} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                          <div className="text-gray-400 text-sm whitespace-nowrap">{activity.time}</div>
-                          <div className="flex-1">
-                            <div className="text-gray-900 font-medium">{activity.action}</div>
-                            {activity.result && <div className="text-sm text-gray-500 mt-1">{activity.result}</div>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">
+                  🤖 10大领域Agent工作状态
+                </h2>
+                <span className="text-sm text-gray-500">
+                  点击任意Agent卡片进入详情页面
+                </span>
               </div>
-            </motion.div>
-          )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                {AGENTS_DATA.slice(0, 5).map((agent) => (
+                  <AgentCard
+                    key={agent.id}
+                    agent={agent}
+                    onClick={handleAgentClick}
+                  />
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
+                {AGENTS_DATA.slice(5, 10).map((agent) => (
+                  <AgentCard
+                    key={agent.id}
+                    agent={agent}
+                    onClick={handleAgentClick}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </motion.div>
       )}
 
-      {activeTab === 'value' && (
+      {viewMode === 'value' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
