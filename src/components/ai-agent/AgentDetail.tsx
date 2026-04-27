@@ -127,11 +127,15 @@ export default function AgentDetail({ agent, onBack, onGoToConfig }: AgentDetail
 
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 关键职责</h3>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-3">
           {agent.keyResponsibilities.map((resp, index) => (
-            <div key={index} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-              <span className="text-blue-500">✓</span>
-              <span className="text-gray-700">{resp}</span>
+            <div key={index} className="p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-semibold text-gray-900 mb-1">{resp.title}</h4>
+              <p className="text-sm text-gray-600 mb-2">{resp.description}</p>
+              <div className="flex items-center gap-2 text-sm text-green-600">
+                <span>✓</span>
+                <span>{resp.result}</span>
+              </div>
             </div>
           ))}
         </div>
