@@ -15,6 +15,7 @@ import {
 } from 'recharts';
 import AgentCard from './AgentCard';
 import { AGENTS_DATA, VALUE_METRICS, BUSINESS_DATA, Agent } from '@/types/agent';
+import { getStatusColor, getStatusText, getSkillStatusColor } from '@/lib/agent-utils';
 
 const trafficData = Array.from({ length: 30 }, (_, i) => ({
   date: `4/${i + 1}`,
@@ -42,45 +43,6 @@ export default function ValueDashboard({ onAgentClick }: { onAgentClick?: (agent
     setViewMode('agent-detail');
     if (onAgentClick) {
       onAgentClick(agent);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500';
-      case 'working':
-        return 'bg-blue-500 animate-pulse';
-      case 'idle':
-        return 'bg-gray-400';
-      default:
-        return 'bg-gray-400';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active':
-        return '在线';
-      case 'working':
-        return '工作中';
-      case 'idle':
-        return '空闲';
-      default:
-        return '空闲';
-    }
-  };
-
-  const getSkillStatusColor = (status?: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500';
-      case 'working':
-        return 'bg-blue-500 animate-pulse';
-      case 'idle':
-        return 'bg-gray-300';
-      default:
-        return 'bg-gray-300';
     }
   };
 

@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Agent } from '@/types/agent';
+import { getStatusColor, getStatusText, getTaskStatusColor } from '@/lib/agent-utils';
 
 interface AgentDetailProps {
   agent: Agent;
@@ -11,47 +12,6 @@ interface AgentDetailProps {
 }
 
 export default function AgentDetail({ agent, onBack, onGoToConfig }: AgentDetailProps) {
-  const getStatusColor = (status: Agent['status']) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500';
-      case 'working':
-        return 'bg-blue-500 animate-pulse';
-      case 'idle':
-        return 'bg-gray-400';
-      default:
-        return 'bg-gray-400';
-    }
-  };
-
-  const getStatusText = (status: Agent['status']) => {
-    switch (status) {
-      case 'active':
-        return '在线';
-      case 'working':
-        return '工作中';
-      case 'idle':
-        return '空闲';
-      default:
-        return '空闲';
-    }
-  };
-
-  const getTaskStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'text-gray-500 bg-gray-100';
-      case 'in-progress':
-        return 'text-blue-600 bg-blue-100';
-      case 'completed':
-        return 'text-green-600 bg-green-100';
-      case 'failed':
-        return 'text-red-600 bg-red-100';
-      default:
-        return 'text-gray-500 bg-gray-100';
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

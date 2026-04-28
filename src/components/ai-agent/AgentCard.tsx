@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Agent } from '@/types/agent';
+import { getStatusColor, getStatusText } from '@/lib/agent-utils';
 
 interface AgentCardProps {
   agent: Agent;
@@ -10,32 +11,6 @@ interface AgentCardProps {
 }
 
 export default function AgentCard({ agent, onClick }: AgentCardProps) {
-  const getStatusColor = (status: Agent['status']) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500';
-      case 'working':
-        return 'bg-blue-500 animate-pulse';
-      case 'idle':
-        return 'bg-gray-400';
-      default:
-        return 'bg-gray-400';
-    }
-  };
-
-  const getStatusText = (status: Agent['status']) => {
-    switch (status) {
-      case 'active':
-        return '在线';
-      case 'working':
-        return '工作中';
-      case 'idle':
-        return '空闲';
-      default:
-        return '空闲';
-    }
-  };
-
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
