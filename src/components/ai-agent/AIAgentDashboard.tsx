@@ -11,6 +11,7 @@ import AgentDetail from './AgentDetail';
 import AgentConfig from './AgentConfig';
 import OperationGuide from './OperationGuide';
 import ValueDashboard from './ValueDashboard';
+import ProductIntro from './ProductIntro';
 import { Agent, AGENTS_DATA } from '@/types/agent';
 
 type ViewMode = 'normal' | 'ai-agent';
@@ -20,6 +21,7 @@ export default function AIAgentDashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('ai-agent');
   const [activePage, setActivePage] = useState<string>('value-dashboard');
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [showProductIntro, setShowProductIntro] = useState(false);
 
   const menuItems = [
     { id: 'value-dashboard', icon: '🚀', label: '数智增长' },
@@ -91,6 +93,14 @@ export default function AIAgentDashboard() {
             </div>
             
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowProductIntro(true)}
+                className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity font-medium"
+              >
+                <span>📊</span>
+                <span>产品介绍</span>
+              </button>
+
               <div className="flex items-center bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('normal')}
@@ -162,6 +172,12 @@ export default function AIAgentDashboard() {
               <p className="text-gray-600">点击上方"AI Agent"按钮体验智能运营助手</p>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showProductIntro && (
+          <ProductIntro onClose={() => setShowProductIntro(false)} />
         )}
       </AnimatePresence>
     </div>

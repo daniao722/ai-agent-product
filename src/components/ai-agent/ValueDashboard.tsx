@@ -333,7 +333,7 @@ export default function ValueDashboard({ onAgentClick }: { onAgentClick?: (agent
                     {agent.icon}
                   </div>
                   <div className="font-bold text-sm">{agent.name}</div>
-                  <div className="text-xs text-white/70">{agent.position === '运营主管' ? '运营主管' : agent.mission.substring(0, 4)}</div>
+                  <div className="text-xs text-white/70">{agent.id === 'mia' ? '推广专员' : agent.id === 'coco' ? '内容运营' : agent.id === 'leo' ? '外贸专员' : agent.id === 'sara' ? '客服专员' : '运营主管'}</div>
                 </div>
               ))}
             </div>
