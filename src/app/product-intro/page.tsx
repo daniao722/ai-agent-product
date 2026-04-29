@@ -8,18 +8,40 @@ import Link from 'next/link';
 export default function ProductIntroPage() {
   const agents = [
     {
+      id: 'ada',
+      name: 'Ada',
+      title: '运营主管',
+      icon: '👩‍💼',
+      color: 'from-pink-500 to-rose-600',
+      mission: '统筹全局战略与品牌建设',
+      realJobTitle: '运营主管/品牌经理',
+      realCost: '¥15-25万/年',
+      capabilities: [
+        { icon: '🎯', title: '品牌定位策略', desc: '品牌定位、价值主张、视觉体系' },
+        { icon: '📊', title: '数据诊断分析', desc: '实时监控核心指标、异常识别' },
+        { icon: '🎯', title: '跨部门任务调度', desc: '智能分配任务、协同工作流' },
+        { icon: '📈', title: '自动化报告生成', desc: '周报月报、数据可视化' }
+      ],
+      metrics: [
+        { value: '65%', label: '策略采纳率', change: '+5%' },
+        { value: '12次/周', label: '任务调度数', change: '+3次' },
+        { value: '72%', label: '效率提升', change: '+7%' },
+        { value: '85%', label: '报告自动生成率', change: '+5%' }
+      ]
+    },
+    {
       id: 'mia',
       name: 'Mia',
       title: '推广专员',
       icon: '🚀',
       color: 'from-purple-500 to-indigo-600',
-      mission: '让海外买家在Google上找到你',
+      mission: '让目标客户在各大平台找到你',
       realJobTitle: 'SEO/推广专员',
       realCost: '¥12-18万/年',
       capabilities: [
-        { icon: '🔍', title: 'Google SEO优化', desc: '关键词研究、页面优化、排名监控' },
-        { icon: '📢', title: 'Google Ads投放', desc: '智能出价、预算分配、效果优化' },
-        { icon: '🌐', title: '外贸客户拓客', desc: '潜在客户搜索、开发信生成' },
+        { icon: '🔍', title: 'SEO优化', desc: '关键词研究、页面优化、排名监控' },
+        { icon: '📢', title: '广告投放', desc: '智能出价、预算分配、效果优化' },
+        { icon: '🌐', title: '客户拓客', desc: '潜在客户搜索、开发信生成' },
         { icon: '📊', title: '市场情报收集', desc: '竞品监控、趋势分析' }
       ],
       metrics: [
@@ -52,41 +74,19 @@ export default function ProductIntroPage() {
       ]
     },
     {
-      id: 'leo',
-      name: 'Leo',
-      title: '外贸业务员',
-      icon: '💼',
-      color: 'from-green-500 to-emerald-600',
-      mission: '让每一条询盘都不被浪费',
-      realJobTitle: '外贸业务员×2',
-      realCost: '¥30-50万/年',
-      capabilities: [
-        { icon: '⚡', title: '7×24h即时响应', desc: '多渠道统一响应、基于知识库回答' },
-        { icon: '💰', title: '智能报价系统', desc: '价格计算、汇率获取、报价单生成' },
-        { icon: '🌱', title: '线索培育跟进', desc: '线索评分、培育流程编排' },
-        { icon: '👥', title: '客户复购管理', desc: '客户档案、订单追踪、续订提醒' }
-      ],
-      metrics: [
-        { value: '3分钟', label: '询盘响应时间', change: '-2小时' },
-        { value: '9.2%', label: '询盘转化率', change: '+5.2%' },
-        { value: '88%', label: 'A级线索识别率', change: '+3%' },
-        { value: '28%', label: '客户复购率', change: '+8%' }
-      ]
-    },
-    {
       id: 'sara',
       name: 'Sara',
       title: '客服专员',
       icon: '🤝',
       color: 'from-orange-500 to-amber-600',
-      mission: '让海外买家随时找到人',
+      mission: '让客户随时找到人并获得专业服务',
       realJobTitle: '客服专员',
       realCost: '¥8-12万/年',
       capabilities: [
         { icon: '❓', title: '智能问答系统', desc: 'RAG知识库精准回答、多语言对话' },
         { icon: '💡', title: '售前咨询转线索', desc: '购买意图识别、转交业务员跟进' },
         { icon: '🛠️', title: '售后工单管理', desc: '自动创建工单、进度跟踪' },
-        { icon: '✅', title: '防伪溯源查询', desc: '订单状态、异常检测预警' }
+        { icon: '✅', title: '客户满意度管理', desc: '反馈收集、服务优化' }
       ],
       metrics: [
         { value: '78%', label: '问题解决率', change: '+3%' },
@@ -96,25 +96,25 @@ export default function ProductIntroPage() {
       ]
     },
     {
-      id: 'ada',
-      name: 'Ada',
-      title: '运营主管',
-      icon: '👩‍💼',
-      color: 'from-pink-500 to-rose-600',
-      mission: '统筹官网运营全局',
-      realJobTitle: '运营主管',
-      realCost: '¥15-25万/年',
+      id: 'leo',
+      name: 'Leo',
+      title: '销售经理',
+      icon: '💼',
+      color: 'from-green-500 to-emerald-600',
+      mission: '让每一条商机都不被浪费，实现高效成交',
+      realJobTitle: '销售经理×2',
+      realCost: '¥30-50万/年',
       capabilities: [
-        { icon: '📊', title: '数据诊断策略', desc: '实时监控核心指标、异常识别' },
-        { icon: '🎯', title: '跨员工任务调度', desc: '智能分配任务、协同工作流' },
-        { icon: '📈', title: '自动化报告生成', desc: '周报月报、数据可视化' },
-        { icon: '🔗', title: '协同工作流编排', desc: '团队协作、流程自动化' }
+        { icon: '⚡', title: '7×24h即时响应', desc: '多渠道统一响应、基于知识库回答' },
+        { icon: '💰', title: '智能报价系统', desc: '价格计算、报价单生成、合同管理' },
+        { icon: '🌱', title: '商机培育跟进', desc: '线索评分、培育流程编排' },
+        { icon: '👥', title: '客户复购管理', desc: '客户档案、订单追踪、续订提醒' }
       ],
       metrics: [
-        { value: '65%', label: '诊断建议采纳率', change: '+5%' },
-        { value: '12次/周', label: '任务调度数', change: '+3次' },
-        { value: '72%', label: '操作效率提升', change: '+7%' },
-        { value: '85%', label: '报告自动生成率', change: '+5%' }
+        { value: '3分钟', label: '响应时间', change: '-2小时' },
+        { value: '9.2%', label: '转化率', change: '+5.2%' },
+        { value: '88%', label: '高意向识别率', change: '+3%' },
+        { value: '28%', label: '客户复购率', change: '+8%' }
       ]
     }
   ];
@@ -152,19 +152,19 @@ export default function ProductIntroPage() {
           >
             <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
               <span>🚀</span>
-              <span>AI驱动的外贸增长新范式</span>
+              <span>AI驱动的数字化增长新范式</span>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               数字门户 AI数字员工
               <br />
               <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                全链路外贸增长平台
+                全链路数字营销平台
               </span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              从内容创作 → 客户触达 → 询盘响应 → 销售沟通 → 成交转化 → 品牌建设
+              从<strong>品牌建设</strong> → 内容创作 → 客户触达 → 询盘响应 → 销售沟通 → <strong>成交转化</strong>
               <br />
-              <strong className="text-purple-600">5大AI数字员工</strong> 助您完成外贸全链路增长
+              <strong className="text-purple-600">5大AI数字员工</strong> 助您实现业务全链路增长
             </p>
 
             <div className="flex gap-4 justify-center mb-12">
@@ -197,7 +197,7 @@ export default function ProductIntroPage() {
                 <div className="text-4xl mb-3">⏰</div>
                 <div className="text-3xl font-bold text-blue-600 mb-1">7×24h</div>
                 <div className="text-gray-600">全天候不间断运营</div>
-                <div className="text-sm text-gray-500 mt-2">无需休息，全球时区全覆盖</div>
+                <div className="text-sm text-gray-500 mt-2">无需休息，全天候在线服务</div>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -218,20 +218,20 @@ export default function ProductIntroPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">外贸增长全链路</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">业务增长全链路</h2>
             <p className="text-xl text-gray-600">每个环节都有AI数字员工专业执行</p>
           </div>
 
           <div className="relative">
-            <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-purple-200 via-blue-200 to-cyan-200 -translate-y-1/2 hidden md:block"></div>
+            <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-pink-200 via-purple-200 via-blue-200 to-cyan-200 to-green-200 -translate-y-1/2 hidden md:block"></div>
             <div className="grid grid-cols-1 md:grid-cols-6 gap-8 relative">
               {[
-                { step: '01', title: '内容创作', icon: '✍️', desc: 'Coco多语言内容生成', color: 'bg-blue-500' },
-                { step: '02', title: '客户触达', icon: '🎯', desc: 'Mia SEO+Ads引流', color: 'bg-purple-500' },
-                { step: '03', title: '访客互动', icon: '💬', desc: 'Sara智能客服接待', color: 'bg-orange-500' },
-                { step: '04', title: '询盘响应', icon: '⚡', desc: 'Leo即时专业回复', color: 'bg-green-500' },
-                { step: '05', title: '成交转化', icon: '💰', desc: '智能报价+跟进', color: 'bg-cyan-500' },
-                { step: '06', title: '品牌建设', icon: '🏆', desc: 'Ada全局策略优化', color: 'bg-pink-500' }
+                { step: '01', title: '品牌建设', icon: '🏆', desc: 'Ada全局策略规划', color: 'bg-pink-500' },
+                { step: '02', title: '内容创作', icon: '✍️', desc: 'Coco专业内容生成', color: 'bg-blue-500' },
+                { step: '03', title: '客户触达', icon: '🎯', desc: 'Mia SEO+Ads引流', color: 'bg-purple-500' },
+                { step: '04', title: '询盘响应', icon: '💬', desc: 'Sara智能客服接待', color: 'bg-orange-500' },
+                { step: '05', title: '销售沟通', icon: '⚡', desc: 'Leo即时专业跟进', color: 'bg-green-500' },
+                { step: '06', title: '成交转化', icon: '💰', desc: '智能报价+合同管理', color: 'bg-cyan-500' }
               ].map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -258,7 +258,7 @@ export default function ProductIntroPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">认识您的5大AI数字员工</h2>
-            <p className="text-xl text-gray-600">对应真实岗位角色 · 完整的外贸运营团队</p>
+            <p className="text-xl text-gray-600">对应真实岗位角色 · 完整的数字运营团队</p>
           </div>
 
           <div className="space-y-8">
@@ -410,14 +410,14 @@ export default function ProductIntroPage() {
                   <span className="text-blue-500 text-xl mt-0.5">✓</span>
                   <div>
                     <strong>极速响应能力</strong>
-                    <p className="text-sm text-gray-600">3分钟内响应询盘 vs 人工数小时</p>
+                    <p className="text-sm text-gray-600">3分钟内响应客户 vs 人工数小时</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-500 text-xl mt-0.5">✓</span>
                   <div>
                     <strong>全天候运营</strong>
-                    <p className="text-sm text-gray-600">7×24小时不间断工作，全球时区全覆盖</p>
+                    <p className="text-sm text-gray-600">7×24小时不间断工作，随时在线服务</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -454,7 +454,7 @@ export default function ProductIntroPage() {
                   <span className="text-purple-500 text-xl mt-0.5">✓</span>
                   <div>
                     <strong>流量持续增长</strong>
-                    <p className="text-sm text-gray-600">SEO + Ads双重引流，获客成本降低</p>
+                    <p className="text-sm text-gray-600">SEO + 广告双重引流，获客成本降低</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -486,10 +486,10 @@ export default function ProductIntroPage() {
             <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">适用场景</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: '🌐', title: 'B2B外贸企业', desc: '需要建立完整的海外营销体系', features: ['独立站运营', '多渠道获客', '品牌国际化'] },
-                { icon: '🏭', title: '制造型企业', desc: '希望拓展国际市场增加出口', features: ['产品出海', '展会数字化', '全球分销'] },
-                { icon: '🛒', title: '跨境电商', desc: '需要强大的多平台运营能力', features: ['多平台管理', '本地化运营', '跨境物流'] },
-                { icon: '💡', title: '创业公司', desc: '低成本快速启动外贸业务', features: ['快速启动', '轻量运营', '快速验证'] }
+                { icon: '🏭', title: '制造型企业', desc: '需要建立完整的数字化营销体系', features: ['品牌官网建设', '产品展示推广', '线上线下融合'] },
+                { icon: '🌐', title: 'B2B/B2C企业', desc: '希望拓展市场增加获客渠道', features: ['多渠道获客', '智能客服系统', '销售流程优化'] },
+                { icon: '🛒', title: '电商/零售企业', desc: '需要强大的内容运营和客户服务能力', features: ['内容批量生产', '多平台管理', '客户精细化运营'] },
+                { icon: '💡', title: '创业公司/中小企业', desc: '低成本快速启动数字化业务', features: ['快速搭建', '轻量运营', '快速验证市场'] }
               ].map((scene, idx) => (
                 <motion.div
                   key={idx}
@@ -524,10 +524,10 @@ export default function ProductIntroPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              立即开启您的AI外贸增长之旅
+              立即开启您的AI数字化增长之旅
             </h2>
             <p className="text-xl text-white/80 mb-10 max-w-3xl mx-auto">
-              加入10000+外贸企业，用AI数字员工实现降本增效，让海外业务增长更简单
+              加入10000+企业，用AI数字员工实现降本增效，让业务增长更简单高效
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <button className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-2xl">
@@ -567,24 +567,24 @@ export default function ProductIntroPage() {
                 <span className="text-2xl">🏢</span>
                 <span className="font-bold text-xl text-white">数字门户</span>
               </div>
-              <p className="text-sm">AI驱动的全链路外贸增长平台</p>
+              <p className="text-sm">AI驱动的全链路数字营销平台</p>
             </div>
             <div>
               <h4 className="font-bold text-white mb-4">产品功能</h4>
               <ul className="space-y-2 text-sm">
+                <li>AI运营主管 Ada</li>
                 <li>AI推广专员 Mia</li>
                 <li>AI内容运营 Coco</li>
-                <li>AI外贸业务员 Leo</li>
                 <li>AI客服专员 Sara</li>
-                <li>AI运营主管 Ada</li>
+                <li>AI销售经理 Leo</li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold text-white mb-4">解决方案</h4>
               <ul className="space-y-2 text-sm">
-                <li>B2B外贸企业</li>
-                <li>制造型企业出海</li>
-                <li>跨境电商</li>
+                <li>制造型企业数字化</li>
+                <li>B2B/B2C企业增长</li>
+                <li>电商零售运营</li>
                 <li>创业公司启动</li>
               </ul>
             </div>
