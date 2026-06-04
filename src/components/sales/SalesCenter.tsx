@@ -26,6 +26,7 @@ import {
   Send,
   Calendar
 } from 'lucide-react';
+import { getLeadStatusColor, getLeadStatusLabel, getPriorityColor } from '../../lib/agent-utils';
 
 const mockLeads = [
   { id: '1', name: '张三', company: 'ABC科技', position: '采购经理', email: 'zhangsan@abc.com', phone: '13800138001', source: '官网表单', score: 92, status: 'new', lastContact: null, createdAt: '2026-05-20 14:30' },
@@ -65,28 +66,6 @@ export default function SalesCenter() {
     { id: 'quotes', label: '智能报价', icon: DollarSign },
     { id: 'follow-up', label: '跟进管理', icon: Clock },
   ];
-
-  const statusColors: Record<string, string> = {
-    new: 'bg-blue-100 text-blue-700',
-    contacted: 'bg-yellow-100 text-yellow-700',
-    qualified: 'bg-purple-100 text-purple-700',
-    converted: 'bg-green-100 text-green-700',
-    lost: 'bg-red-100 text-red-700',
-  };
-
-  const statusLabels: Record<string, string> = {
-    new: '新线索',
-    contacted: '已联系',
-    qualified: '已认证',
-    converted: '已转化',
-    lost: '已流失',
-  };
-
-  const priorityColors: Record<string, string> = {
-    high: 'bg-red-100 text-red-700',
-    medium: 'bg-yellow-100 text-yellow-700',
-    low: 'bg-green-100 text-green-700',
-  };
 
   return (
     <div className="p-6">
@@ -271,8 +250,8 @@ export default function SalesCenter() {
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[lead.status]}`}>
-                            {statusLabels[lead.status]}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLeadStatusColor(lead.status)}`}>
+                            {getLeadStatusLabel(lead.status)}
                           </span>
                         </td>
                         <td className="px-4 py-4">
@@ -468,7 +447,7 @@ export default function SalesCenter() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[task.priority]}`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
                               {task.priority === 'high' ? '高' : task.priority === 'medium' ? '中' : '低'}
                             </span>
                             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">

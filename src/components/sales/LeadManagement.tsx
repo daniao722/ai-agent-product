@@ -11,6 +11,7 @@ import {
   Download,
   MessageSquare,
 } from 'lucide-react';
+import { getLeadStatusColor, getLeadStatusLabel } from '../../lib/agent-utils';
 
 const mockLeads = [
   { id: '1', name: '张三', company: 'ABC科技', position: '采购经理', email: 'zhangsan@abc.com', phone: '13800138001', source: '官网表单', score: 92, status: 'new', lastContact: null, createdAt: '2026-05-20 14:30' },
@@ -20,22 +21,6 @@ const mockLeads = [
   { id: '5', name: '孙七', company: 'JKL物流', position: '运营总监', email: 'sunqi@jkl.com', phone: '13500135005', source: '展会', score: 65, status: 'new', lastContact: null, createdAt: '2026-05-17 14:00' },
   { id: '6', name: '周八', company: 'MNO电子', position: '采购主管', email: 'zhouba@mno.com', phone: '13400134006', source: '邮件营销', score: 72, status: 'contacted', lastContact: '2026-05-16 11:00', createdAt: '2026-05-16 10:30' },
 ];
-
-const statusColors: Record<string, string> = {
-  new: 'bg-blue-100 text-blue-700',
-  contacted: 'bg-yellow-100 text-yellow-700',
-  qualified: 'bg-purple-100 text-purple-700',
-  converted: 'bg-green-100 text-green-700',
-  lost: 'bg-red-100 text-red-700',
-};
-
-const statusLabels: Record<string, string> = {
-  new: '新线索',
-  contacted: '已联系',
-  qualified: '已认证',
-  converted: '已转化',
-  lost: '已流失',
-};
 
 export default function LeadManagement() {
   const [filterStatus, setFilterStatus] = useState('all');
@@ -142,8 +127,8 @@ export default function LeadManagement() {
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[lead.status]}`}>
-                        {statusLabels[lead.status]}
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLeadStatusColor(lead.status)}`}>
+                        {getLeadStatusLabel(lead.status)}
                       </span>
                     </td>
                     <td className="px-4 py-4">

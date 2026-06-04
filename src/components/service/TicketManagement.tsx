@@ -8,6 +8,7 @@ import {
   User,
   Plus
 } from 'lucide-react';
+import { getTicketStatusColor, getTicketStatusLabel, getPriorityColor } from '../../lib/agent-utils';
 
 const mockTickets = [
   { id: 'T202605001', title: '产品使用咨询', customer: '张三', company: 'ABC科技', type: 'consultation', status: 'open', priority: 'medium', assignee: '客服小李', createdAt: '2026-05-20 10:30', updatedAt: '2026-05-20 14:20' },
@@ -16,26 +17,6 @@ const mockTickets = [
   { id: 'T202605004', title: '功能建议', customer: '赵六', company: 'GHI贸易', type: 'suggestion', status: 'open', priority: 'low', assignee: null, createdAt: '2026-05-19 14:30', updatedAt: '2026-05-19 14:30' },
   { id: 'T202605005', title: '账单问题', customer: '孙七', company: 'JKL物流', type: 'billing', status: 'pending', priority: 'medium', assignee: '财务小张', createdAt: '2026-05-18 11:00', updatedAt: '2026-05-20 09:00' },
 ];
-
-const statusColors: Record<string, string> = {
-  open: 'bg-blue-100 text-blue-700',
-  pending: 'bg-yellow-100 text-yellow-700',
-  resolved: 'bg-green-100 text-green-700',
-  closed: 'bg-gray-100 text-gray-700',
-};
-
-const statusLabels: Record<string, string> = {
-  open: '待处理',
-  pending: '处理中',
-  resolved: '已解决',
-  closed: '已关闭',
-};
-
-const priorityColors: Record<string, string> = {
-  high: 'bg-red-100 text-red-700',
-  medium: 'bg-yellow-100 text-yellow-700',
-  low: 'bg-green-100 text-green-700',
-};
 
 export default function TicketManagement() {
   return (
@@ -118,13 +99,13 @@ export default function TicketManagement() {
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(ticket.priority)}`}>
                       {ticket.priority === 'high' ? '高' : ticket.priority === 'medium' ? '中' : '低'}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[ticket.status]}`}>
-                      {statusLabels[ticket.status]}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTicketStatusColor(ticket.status)}`}>
+                      {getTicketStatusLabel(ticket.status)}
                     </span>
                   </td>
                   <td className="px-4 py-4">

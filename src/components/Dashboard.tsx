@@ -15,6 +15,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { DashboardStats, TrafficData, Lead } from '../types';
+import { getLeadStatusColor, getLeadStatusLabel } from '../lib/agent-utils';
 
 const mockDashboardStats: DashboardStats = {
   totalUsers: 12453,
@@ -119,22 +120,6 @@ const TrafficChart = () => {
 };
 
 const RecentLeads = () => {
-  const statusColors = {
-    new: 'bg-gray-100 text-gray-700',
-    contacted: 'bg-blue-100 text-blue-700',
-    qualified: 'bg-yellow-100 text-yellow-700',
-    converted: 'bg-green-100 text-green-700',
-    lost: 'bg-red-100 text-red-700',
-  };
-
-  const statusLabels = {
-    new: '新线索',
-    contacted: '已联系',
-    qualified: '已认证',
-    converted: '已转化',
-    lost: '已流失',
-  };
-
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-6">
@@ -161,8 +146,8 @@ const RecentLeads = () => {
                 <p className="text-sm font-medium text-gray-700">评分: {lead.score}</p>
                 <p className="text-xs text-gray-400">{lead.createdAt}</p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[lead.status]}`}>
-                {statusLabels[lead.status]}
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLeadStatusColor(lead.status)}`}>
+                {getLeadStatusLabel(lead.status)}
               </span>
             </div>
           </div>
