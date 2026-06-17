@@ -11,6 +11,7 @@ import {
   Globe2,
   Menu,
   X,
+  Palette,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -22,6 +23,7 @@ interface SidebarProps {
 const centerMenus: Record<string, { id: string; label: string; icon?: React.ElementType; path?: string }[]> = {
   dashboard: [
     { id: 'dashboard', label: '概览', icon: LayoutDashboard },
+    { id: 'designer-login', label: '设计器', icon: Palette },
   ],
   website: [
     { id: 'content', label: '内容管理' },
@@ -100,6 +102,7 @@ const centerIcons: Record<string, React.ElementType> = {
   commerce: CreditCard,
   analytics: BarChart3,
   global: Globe2,
+  designer: Palette,
 };
 
 const centerNames: Record<string, string> = {
@@ -112,6 +115,7 @@ const centerNames: Record<string, string> = {
   commerce: '交易履约',
   analytics: '增长智能',
   global: '全球拓展',
+  designer: '设计器',
 };
 
 export default function Sidebar({ currentPage, currentCenter, onPageChange }: SidebarProps) {

@@ -8,6 +8,7 @@ import {
   Building,
   ShoppingCart
 } from 'lucide-react';
+import { getOrderStatusColor, getOrderStatusLabel, getPaymentStatusColor, getPaymentStatusLabel, getDeliveryStatusColor, getDeliveryStatusLabel } from '../../lib/agent-utils';
 
 const mockOrders = [
   { id: 'O202605001', orderNo: 'SO-20260520-001', customer: 'ABC科技', product: 'IRB-2000工业机器人 x2', amount: 296000, status: 'confirmed', paymentStatus: 'paid', deliveryStatus: 'preparing', createdAt: '2026-05-20' },
@@ -17,26 +18,6 @@ const mockOrders = [
   { id: 'O202605005', orderNo: 'SO-20260516-005', customer: 'JKL物流', product: '智能分拣系统 x1', amount: 560000, status: 'confirmed', paymentStatus: 'paid', deliveryStatus: 'preparing', createdAt: '2026-05-16' },
   { id: 'O202605006', orderNo: 'SO-20260515-006', customer: 'MNO电子', product: '焊接机器人 x3', amount: 276000, status: 'shipped', paymentStatus: 'paid', deliveryStatus: 'in_transit', createdAt: '2026-05-15' },
 ];
-
-const orderStatus: Record<string, { color: string; label: string }> = {
-  processing: { color: 'bg-gray-100 text-gray-700', label: '处理中' },
-  confirmed: { color: 'bg-blue-100 text-blue-700', label: '已确认' },
-  shipped: { color: 'bg-purple-100 text-purple-700', label: '已发货' },
-  delivered: { color: 'bg-green-100 text-green-700', label: '已送达' },
-  cancelled: { color: 'bg-red-100 text-red-700', label: '已取消' },
-};
-
-const paymentStatusLabel: Record<string, { color: string; label: string }> = {
-  paid: { color: 'bg-green-100 text-green-700', label: '已支付' },
-  unpaid: { color: 'bg-yellow-100 text-yellow-700', label: '待支付' },
-};
-
-const deliveryStatusLabel: Record<string, { color: string; label: string }> = {
-  delivered: { color: 'bg-green-100 text-green-700', label: '已送达' },
-  in_transit: { color: 'bg-blue-100 text-blue-700', label: '运输中' },
-  preparing: { color: 'bg-purple-100 text-purple-700', label: '备货中' },
-  pending: { color: 'bg-gray-100 text-gray-700', label: '待发货' },
-};
 
 export default function OrderManagement() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -123,18 +104,18 @@ export default function OrderManagement() {
                   <td className="px-4 py-4 text-gray-600">{order.product}</td>
                   <td className="px-4 py-4 font-semibold text-gray-800">¥{order.amount.toLocaleString()}</td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${orderStatus[order.status].color}`}>
-                      {orderStatus[order.status].label}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getOrderStatusColor(order.status)}`}>
+                      {getOrderStatusLabel(order.status)}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentStatusLabel[order.paymentStatus].color}`}>
-                      {paymentStatusLabel[order.paymentStatus].label}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(order.paymentStatus)}`}>
+                      {getPaymentStatusLabel(order.paymentStatus)}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${deliveryStatusLabel[order.deliveryStatus].color}`}>
-                      {deliveryStatusLabel[order.deliveryStatus].label}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDeliveryStatusColor(order.deliveryStatus)}`}>
+                      {getDeliveryStatusLabel(order.deliveryStatus)}
                     </span>
                   </td>
                   <td className="px-4 py-4">

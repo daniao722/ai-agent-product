@@ -9,9 +9,11 @@ import {
   Package,
   Calendar,
   DollarSign,
-  Tag
+  Tag,
+  Sparkles,
 } from 'lucide-react';
 import { Product } from '../../types';
+import AICreateProduct from './AICreateProduct';
 
 const mockProducts: Product[] = [
   { id: '1', name: '智能营销系统', description: 'AI驱动的智能营销解决方案', price: 2999, category: '营销工具', stock: 100, images: [], createdAt: '2026-05-01' },
@@ -25,6 +27,7 @@ export default function ProductManagement() {
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAICreate, setShowAICreate] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const filteredProducts = products.filter((product) =>
@@ -65,6 +68,20 @@ export default function ProductManagement() {
     }
   };
 
+  const handleAICreateSave = (productData: Record<string, unknown>) => {
+    const newProduct: Product = {
+      id: Date.now().toString(),
+      name: (productData.name as string) || '新产品',
+      description: (productData.description as string) || '',
+      price: 0,
+      category: (productData.category as string) || '',
+      stock: 0,
+      images: [],
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+    setProducts([...products, newProduct]);
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -72,13 +89,22 @@ export default function ProductManagement() {
           <h1 className="text-2xl font-bold text-gray-800">产品管理</h1>
           <p className="text-gray-500 mt-1">管理网站产品信息</p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          <span>新建产品</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowAICreate(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all shadow-sm"
+          >
+            <Sparkles className="w-5 h-5" />
+            <span>AI 创建产品</span>
+          </button>
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            <span>新建产品</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
@@ -241,6 +267,13 @@ export default function ProductManagement() {
             </div>
           </div>
         </div>
+      )}
+
+      {showAICreate && (
+        <AICreateProduct
+          onClose={() => setShowAICreate(false)}
+          onSave={handleAICreateSave}
+        />
       )}
     </div>
   );

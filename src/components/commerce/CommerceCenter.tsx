@@ -26,6 +26,16 @@ import {
   Truck,
   BarChart3
 } from 'lucide-react';
+import {
+  getQuotationStatusColor,
+  getQuotationStatusLabel,
+  getContractStatusColor,
+  getContractStatusLabel,
+  getOrderStatusColor,
+  getOrderStatusLabel,
+  getPaymentStatusColor,
+  getPaymentStatusLabel,
+} from '../../lib/agent-utils';
 
 const mockQuotations = [
   { id: 'Q202605001', code: 'QT-20260520-001', customer: 'ABC科技', product: 'IRB-2000工业机器人', quantity: 2, unitPrice: 148000, totalAmount: 296000, status: 'draft', createdAt: '2026-05-20', validUntil: '2026-06-19' },
@@ -64,35 +74,6 @@ export default function CommerceCenter() {
     { id: 'orders', label: '订单管理', icon: ShoppingCart },
     { id: 'payments', label: '收款结算', icon: DollarSign },
   ];
-
-  const quotationStatus: Record<string, { color: string; label: string }> = {
-    draft: { color: 'bg-gray-100 text-gray-700', label: '草稿' },
-    sent: { color: 'bg-blue-100 text-blue-700', label: '已发送' },
-    accepted: { color: 'bg-green-100 text-green-700', label: '已接受' },
-    rejected: { color: 'bg-red-100 text-red-700', label: '已拒绝' },
-  };
-
-  const contractStatus: Record<string, { color: string; label: string }> = {
-    pending: { color: 'bg-yellow-100 text-yellow-700', label: '待签署' },
-    signed: { color: 'bg-blue-100 text-blue-700', label: '已签署' },
-    performing: { color: 'bg-purple-100 text-purple-700', label: '执行中' },
-    completed: { color: 'bg-green-100 text-green-700', label: '已完成' },
-    cancelled: { color: 'bg-red-100 text-red-700', label: '已取消' },
-  };
-
-  const orderStatus: Record<string, { color: string; label: string }> = {
-    processing: { color: 'bg-gray-100 text-gray-700', label: '处理中' },
-    confirmed: { color: 'bg-blue-100 text-blue-700', label: '已确认' },
-    shipped: { color: 'bg-purple-100 text-purple-700', label: '已发货' },
-    delivered: { color: 'bg-green-100 text-green-700', label: '已送达' },
-    cancelled: { color: 'bg-red-100 text-red-700', label: '已取消' },
-  };
-
-  const paymentStatus: Record<string, { color: string; label: string }> = {
-    pending: { color: 'bg-yellow-100 text-yellow-700', label: '待支付' },
-    received: { color: 'bg-green-100 text-green-700', label: '已收款' },
-    refunded: { color: 'bg-red-100 text-red-700', label: '已退款' },
-  };
 
   return (
     <div className="p-6">
@@ -253,8 +234,8 @@ export default function CommerceCenter() {
                         <td className="px-4 py-4 font-semibold text-gray-800">¥{quote.totalAmount.toLocaleString()}</td>
                         <td className="px-4 py-4 text-gray-600">{quote.validUntil}</td>
                         <td className="px-4 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${quotationStatus[quote.status].color}`}>
-                            {quotationStatus[quote.status].label}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getQuotationStatusColor(quote.status)}`}>
+                            {getQuotationStatusLabel(quote.status)}
                           </span>
                         </td>
                         <td className="px-4 py-4">
@@ -340,8 +321,8 @@ export default function CommerceCenter() {
                           </span>
                         </td>
                         <td className="px-4 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${contractStatus[contract.status].color}`}>
-                            {contractStatus[contract.status].label}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getContractStatusColor(contract.status)}`}>
+                            {getContractStatusLabel(contract.status)}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-gray-600">{contract.createdAt}</td>
@@ -423,8 +404,8 @@ export default function CommerceCenter() {
                         <td className="px-4 py-4 text-gray-600">{order.product}</td>
                         <td className="px-4 py-4 font-semibold text-gray-800">¥{order.amount.toLocaleString()}</td>
                         <td className="px-4 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${orderStatus[order.status].color}`}>
-                            {orderStatus[order.status].label}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getOrderStatusColor(order.status)}`}>
+                            {getOrderStatusLabel(order.status)}
                           </span>
                         </td>
                         <td className="px-4 py-4">
@@ -524,8 +505,8 @@ export default function CommerceCenter() {
                           </span>
                         </td>
                         <td className="px-4 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentStatus[payment.status].color}`}>
-                            {paymentStatus[payment.status].label}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(payment.status)}`}>
+                            {getPaymentStatusLabel(payment.status)}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-gray-600">{payment.paidAt || '-'}</td>

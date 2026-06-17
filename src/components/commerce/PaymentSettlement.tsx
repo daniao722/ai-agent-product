@@ -8,6 +8,7 @@ import {
   RefreshCw,
   DollarSign
 } from 'lucide-react';
+import { getPaymentStatusColor, getPaymentStatusLabel } from '../../lib/agent-utils';
 
 const mockPayments = [
   { id: 'P202605001', receiptNo: 'RC-20260520-001', orderNo: 'SO-20260520-001', customer: 'ABC科技', amount: 296000, method: 'bank_transfer', status: 'received', paidAt: '2026-05-20 15:30' },
@@ -17,12 +18,6 @@ const mockPayments = [
   { id: 'P202605005', receiptNo: 'RC-20260516-005', orderNo: 'SO-20260516-005', customer: 'JKL物流', amount: 560000, method: 'bank_transfer', status: 'received', paidAt: '2026-05-16 10:15' },
   { id: 'P202605006', receiptNo: 'RC-20260515-006', orderNo: 'SO-20260515-006', customer: 'MNO电子', amount: 276000, method: 'credit_card', status: 'refunded', paidAt: '2026-05-15 09:30' },
 ];
-
-const paymentStatus: Record<string, { color: string; label: string }> = {
-  pending: { color: 'bg-yellow-100 text-yellow-700', label: '待支付' },
-  received: { color: 'bg-green-100 text-green-700', label: '已收款' },
-  refunded: { color: 'bg-red-100 text-red-700', label: '已退款' },
-};
 
 const paymentMethod: Record<string, string> = {
   bank_transfer: '银行转账',
@@ -123,8 +118,8 @@ export default function PaymentSettlement() {
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${paymentStatus[payment.status].color}`}>
-                      {paymentStatus[payment.status].label}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(payment.status)}`}>
+                      {getPaymentStatusLabel(payment.status)}
                     </span>
                   </td>
                   <td className="px-4 py-4 text-gray-600">{payment.paidAt || '-'}</td>

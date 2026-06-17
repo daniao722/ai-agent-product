@@ -11,6 +11,10 @@ import BannerManagement from './components/website/BannerManagement';
 import SEOManagement from './components/website/SEOManagement';
 import SecurityManagement from './components/website/SecurityManagement';
 import DomainManagement from './components/website/DomainManagement';
+// 设计器
+import DesignerLogin from './components/designer/DesignerLogin';
+import DesignerWorkspace from './components/designer/DesignerWorkspace';
+import TemplatePreview from './components/designer/TemplatePreview';
 // 营销增长中心
 import MarketingOverview from './components/marketing/MarketingOverview';
 import ConversionDiagnosis from './components/marketing/ConversionDiagnosis';
@@ -173,6 +177,10 @@ const pageComponents: Record<string, React.ComponentType> = {
   compliance: ComplianceAssessment,
   localization: LocalizationDeploy,
   'risk-control': RiskMonitoring,
+  // 设计器
+  'designer-login': DesignerLogin,
+  'designer-workspace': DesignerWorkspace,
+  'template-preview': TemplatePreview,
 };
 
 const pageToCenter: Record<string, string> = {
@@ -268,11 +276,44 @@ const pageToCenter: Record<string, string> = {
   compliance: 'global',
   localization: 'global',
   'risk-control': 'global',
+  // 设计器
+  'designer-login': 'designer',
+  'designer-workspace': 'designer',
+  'template-preview': 'designer',
 };
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-  const [currentCenter, setCurrentCenter] = useState('dashboard');
+  const [currentPage, setCurrentPage] = useState(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash === '/designer' || hash === '/designer-login') return 'designer-login';
+    if (hash === '/designer/workspace') return 'designer-workspace';
+    if (hash.startsWith('/template-preview/')) return 'template-preview';
+    return 'dashboard';
+  });
+  const [currentCenter, setCurrentCenter] = useState(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash === '/designer' || hash === '/designer-login' || hash === '/designer/workspace' || hash.startsWith('/template-preview/')) return 'designer';
+    return 'dashboard';
+  });
+
+  // 监听 URL hash 变化，支持设计器独立地址访问
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash === '/designer' || hash === '/designer-login') {
+        setCurrentPage('designer-login');
+        setCurrentCenter('designer');
+      } else if (hash === '/designer/workspace') {
+        setCurrentPage('designer-workspace');
+        setCurrentCenter('designer');
+      } else if (hash.startsWith('/template-preview/')) {
+        setCurrentPage('template-preview');
+        setCurrentCenter('designer');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // 监听来自概览页面的导航事件
   useEffect(() => {
@@ -306,6 +347,18 @@ export default function App() {
   const PageComponent = pageComponents[currentPage] || Dashboard;
 
   const isContentCenter = currentCenter === 'content-center';
+  const isDesigner = currentCenter === 'designer';
+
+  // Designer pages have their own layout
+  if (isDesigner) {
+    if (currentPage === 'designer-login') {
+      return <DesignerLogin onLogin={() => setCurrentPage('designer-workspace')} />;
+    }
+    if (currentPage === 'template-preview') {
+      return <TemplatePreview />;
+    }
+    return <DesignerWorkspace onBack={() => setCurrentPage('dashboard')} />;
+  }
 
   // content-hub pages need onNavigate prop, other pages don't
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
