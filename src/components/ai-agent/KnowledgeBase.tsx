@@ -144,7 +144,7 @@ const techStack = [
   },
   {
     level: 3,
-    name: '知识基座',
+    name: 'AI知识库',
     desc: '向量库 + 知识图谱 + RAG 检索',
     icon: Database,
     color: 'from-purple-500 to-pink-500',
@@ -560,7 +560,7 @@ export default function KnowledgeBase() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              AI 知识基座
+              AI 知识库
               <span className="text-xs px-2 py-0.5 bg-purple-100 text-purple-600 rounded-full font-medium">地基层</span>
             </h1>
             <p className="text-sm text-gray-500">支撑 五大智能体的统一知识底座</p>
@@ -599,7 +599,7 @@ export default function KnowledgeBase() {
               <Sparkles className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold mb-2">AI 知识基座：企业拥抱 AI 时代的敲门砖</h2>
+              <h2 className="text-2xl font-bold mb-2">AI 知识库：企业拥抱 AI 时代的敲门砖</h2>
               <p className="text-purple-50/90 leading-relaxed max-w-4xl">
                 所有智能体的智能都来自知识。没有知识库，智能体只能输出通用内容；有了知识库，智能体输出的每一句文案、每一个推荐、每一次对话都带着客户企业的专业深度。
               </p>
@@ -684,7 +684,7 @@ export default function KnowledgeBase() {
           <span>智能加工</span>
           <ArrowRight className="w-3 h-3" />
           <Database className="w-3.5 h-3.5" />
-          <span>基座沉淀</span>
+          <span>知识沉淀</span>
           <ArrowRight className="w-3 h-3" />
           <Server className="w-3.5 h-3.5" />
           <span>智能体赋能</span>
@@ -991,7 +991,7 @@ export default function KnowledgeBase() {
 
       {/* Footer note */}
       <div className="text-center text-xs text-gray-400 pt-2 pb-4">
-        AI 知识基座 · 知识越厚，智能体越聪明 · 数字资产即企业护城河
+        AI 知识库 · 知识越厚，智能体越聪明 · 数字资产即企业护城河
       </div>
     </div>
   );

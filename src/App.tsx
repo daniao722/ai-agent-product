@@ -63,7 +63,7 @@ import FollowUpManagement from './components/sales/FollowUpManagement';
 import SalesFunnel from './components/sales/SalesFunnel';
 import SalesEnablement from './components/sales/SalesEnablement';
 import DealReview from './components/sales/DealReview';
-// AI智能中心（PRD v1.4：知识基座 + 五大智能体，一期2个）
+// AI智能中心（PRD v1.4：AI知识库 + 五大智能体，一期2个）
 import AgentOverview from './components/ai-agent/AgentOverview';
 import KnowledgeBase from './components/ai-agent/KnowledgeBase';
 import AgentVisitorAnalysis from './components/ai-agent/AgentVisitorAnalysis';
@@ -158,7 +158,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   'sales-funnel': SalesFunnel,
   'sales-enablement': SalesEnablement,
   'deal-review': DealReview,
-  // AI智能中心（PRD v1.4 一期：总览 + 知识基座 + 2 个智能体）
+  // AI智能中心（PRD v1.4 一期：总览 + AI知识库 + 2 个智能体）
   'agent-overview': AgentOverview,
   'ai-knowledge-base': KnowledgeBase,
   'agent-visitor': AgentVisitorAnalysis,

@@ -70,7 +70,7 @@ const centerMenus: Record<string, { id: string; label: string; icon?: React.Elem
   ],
   'ai-agent': [
     { id: 'agent-overview', label: '总览', icon: LayoutDashboard },
-    { id: 'ai-knowledge-base', label: '知识库底座' },
+    { id: 'ai-knowledge-base', label: 'AI知识库' },
     { id: 'agent-visitor', label: 'AI访客行为分析' },
     { id: 'agent-content', label: 'AI内容运营' },
     { id: 'agent-personalize', label: 'AI个性化体验', comingSoon: true },

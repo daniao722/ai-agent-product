@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search,
   Activity,
@@ -196,6 +196,30 @@ export default function AgentVisitorAnalysis() {
   const [progress, setProgress] = useState(0);
   const [recs, setRecs] = useState<Recommendation[]>(recommendations);
   const [trackedIds, setTrackedIds] = useState<Set<string>>(new Set());
+  // 自动监控模式：开启后每 10 秒模拟一次新数据流入，自动识别瓶颈并派单
+  const [autoMonitor, setAutoMonitor] = useState(true);
+  const [autoDispatched, setAutoDispatched] = useState<Set<string>>(new Set());
+  const [lastAutoScan, setLastAutoScan] = useState('刚刚');
+
+  // 自动监控循环
+  useEffect(() => {
+    if (!autoMonitor) return;
+    const timer = setInterval(() => {
+      // 模拟自动扫描：所有未采纳的 P0 建议自动派单到内容运营
+      setRecs((prev) => {
+        const newDispatched = new Set(autoDispatched);
+        prev.forEach((r) => {
+          if (r.priority === 'P0' && !r.adopted) {
+            newDispatched.add(r.id);
+          }
+        });
+        setAutoDispatched(newDispatched);
+        return prev;
+      });
+      setLastAutoScan('刚刚');
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [autoMonitor, autoDispatched]);
 
   const timeRangeOptions: { value: TimeRange; label: string }[] = [
     { value: 'today', label: '今日' },
@@ -280,6 +304,25 @@ export default function AgentVisitorAnalysis() {
                 </div>
               </div>
             </div>
+            <button
+              onClick={() => setAutoMonitor(!autoMonitor)}
+              className={`backdrop-blur rounded-xl px-4 py-3 border flex items-center gap-3 transition-all ${
+                autoMonitor
+                  ? 'bg-white/15 border-emerald-300/40 hover:bg-white/25'
+                  : 'bg-white/5 border-white/20 hover:bg-white/15'
+              }`}
+            >
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${autoMonitor ? 'bg-emerald-400/30' : 'bg-white/15'}`}>
+                <Activity className={`w-5 h-5 text-white ${autoMonitor ? 'animate-pulse' : ''}`} />
+              </div>
+              <div className="text-left">
+                <div className="text-xs text-amber-50/80">自动监控</div>
+                <div className="flex items-center gap-1.5 text-sm font-semibold">
+                  <span className={`w-1.5 h-1.5 rounded-full ${autoMonitor ? 'bg-emerald-400 animate-pulse' : 'bg-gray-400'}`} />
+                  {autoMonitor ? `运行中 · ${lastAutoScan}` : '已暂停'}
+                </div>
+              </div>
+            </button>
           </div>
         </div>
       </header>
@@ -641,7 +684,7 @@ export default function AgentVisitorAnalysis() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className={`text-xs px-1.5 py-0.5 rounded border ${getPriorityBadge(rec.priority)}`}>
                           {rec.priority}
                         </span>
@@ -649,6 +692,12 @@ export default function AgentVisitorAnalysis() {
                           <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 border border-green-200 flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" />
                             已采纳
+                          </span>
+                        )}
+                        {autoDispatched.has(rec.id) && !rec.adopted && (
+                          <span className="text-xs px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-700 border border-cyan-200 flex items-center gap-1 animate-pulse">
+                            <Send className="w-3 h-3" />
+                            已自动派单 → 内容运营
                           </span>
                         )}
                       </div>
