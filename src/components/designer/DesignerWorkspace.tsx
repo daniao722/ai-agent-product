@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PAGE_COMPONENTS, COMPONENT_CATEGORIES, INDUSTRY_TEMPLATES } from './pageComponents';
 import DesignerAIChat, { BrandInfo, WorkflowStep } from './DesignerAIChat';
 import TemplateSelector from './TemplateSelector';
@@ -9,6 +9,7 @@ import {
   Droplet, Truck, Wrench, HeadphonesIcon, BookOpen, Clock,
   Microscope, FileText, Syringe, TestTube, FlaskConical, Dna, Atom,
   BadgeCheck, Phone, MessageSquare, Mail, CircleDot,
+  Sparkles, Loader2, Play, Edit3,
 } from 'lucide-react';
 
 // ==================== 模板画布组件 ====================
@@ -48,7 +49,6 @@ function getIcon(name: string, className: string = 'w-5 h-5') {
   return icons[name] || <CheckCircle className={className} />;
 }
 
-// 模板数据（与TemplatePreview共享相同结构）
 const TEMPLATE_DATA: Record<string, {
   name: string;
   color: string;
@@ -163,7 +163,6 @@ function TemplateCanvasContent({ templateId, brandInfo }: TemplateCanvasProps) {
 
   return (
     <div className="bg-white">
-
       {/* Hero */}
       <div className="relative h-[320px] overflow-hidden">
         <img src={template.heroImage} alt="" className="w-full h-full object-cover" />
@@ -425,130 +424,239 @@ function TemplateCanvasContent({ templateId, brandInfo }: TemplateCanvasProps) {
   );
 }
 
-interface DesignerPage {
-  id: string;
-  components: string[];
-  brandInfo: BrandInfo | null;
+// ==================== 加载动画组件 ====================
+function GeneratingAnimation() {
+  return (
+    <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="relative mb-6">
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+          <Sparkles className="w-10 h-10 text-white animate-pulse" />
+        </div>
+        <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center animate-bounce">
+          <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
+        </div>
+      </div>
+      <h3 className="text-lg font-semibold text-gray-800 mb-2">AI 正在生成页面...</h3>
+      <p className="text-sm text-gray-500 mb-6">正在分析行业规范、生成组件布局、应用品牌样式</p>
+      <div className="flex gap-1.5">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-bounce"
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default function DesignerWorkspace({ onBack }: { onBack: () => void }) {
-  const [showTemplateSelector, setShowTemplateSelector] = useState(true);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [showAIChat, setShowAIChat] = useState(true);
-  const [currentPage, setCurrentPage] = useState<DesignerPage | null>(null);
-  const [draggedComponent, setDraggedComponent] = useState<string | null>(null);
+// ==================== 流程概览组件 ====================
+function FlowOverview({ onStart }: { onStart: () => void }) {
+  const steps = [
+    { num: '01', title: '分析品牌信息', desc: '获取企业名称、行业、核心产品、品牌主色', icon: '🏢' },
+    { num: '02', title: '匹配行业规范', desc: '从行业知识库中匹配适合的内容规范', icon: '📋' },
+    { num: '03', title: '生成设计提案', desc: '基于规范生成提案，支持手动调整', icon: '' },
+    { num: '04', title: '选择页面模板', desc: '选择行业模板或输入参考页面URL', icon: '🎨' },
+    { num: '05', title: 'AI生成页面', desc: '智能生成符合规范的完整产品详情页', icon: '✨' },
+    { num: '06', title: '编辑与保存', desc: '可视化编辑组件，保存发布页面', icon: '📝' },
+  ];
+
+  return (
+    <div className="h-full flex items-center justify-center p-8">
+      <div className="max-w-2xl w-full">
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <Sparkles className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">产品详情页设计器</h2>
+          <p className="text-gray-500 text-sm">通过 AI 智能流程，快速创建符合行业规范的高质量产品详情页</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-8">
+          {steps.map((step) => (
+            <div key={step.num} className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all">
+              <span className="text-xl flex-shrink-0">{step.icon}</span>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-mono text-blue-500 font-bold">{step.num}</span>
+                  <span className="text-sm font-semibold text-gray-800">{step.title}</span>
+                </div>
+                <p className="text-xs text-gray-500">{step.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <button
+            onClick={onStart}
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md flex items-center gap-2 mx-auto"
+          >
+            <Play className="w-5 h-5" />
+            开始 AI 设计流程
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== 主组件 ====================
+interface DesignerWorkspaceProps {
+  onBack: () => void;
+  editPageId?: string;
+}
+
+export default function DesignerWorkspace({ onBack, editPageId }: DesignerWorkspaceProps) {
+  // 三态模式: 'flow' = 流程概览, 'chat' = AI对话, 'edit' = 编辑
+  const [mode, setMode] = useState<'flow' | 'chat' | 'edit'>(() => editPageId ? 'edit' : 'flow');
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(() => editPageId ? 'mechanical-equipment' : null);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
+  const [workflowStep, setWorkflowStep] = useState<WorkflowStep>('idle');
+  const [proposalModules, setProposalModules] = useState<{ id: string; name: string; required: boolean }[]>([]);
+
+  // 编辑模式状态
+  const [showComponentLib, setShowComponentLib] = useState(() => editPageId ? true : false);
+  const [currentPageComponents, setCurrentPageComponents] = useState<string[]>([]);
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [workflowStep, setWorkflowStep] = useState<WorkflowStep>('brand');
-  const [brandInfo, setBrandInfo] = useState<BrandInfo | null>(null);
+  const [draggedComponent, setDraggedComponent] = useState<string | null>(null);
 
-  const handleTemplateSelect = (templateId: string) => {
-    setSelectedTemplate(templateId);
-    setShowTemplateSelector(false);
+  // 生成中状态
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationComplete, setGenerationComplete] = useState(false);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+
+  // 当 editPageId 存在时，直接进入编辑模式
+  useEffect(() => {
+    if (editPageId) {
+      setMode('edit');
+      setSelectedTemplate(prev => prev || 'mechanical-equipment');
+      setShowComponentLib(true);
+      setGenerationComplete(true);
+    }
+  }, [editPageId]);
+
+  // 开始AI设计流程
+  const handleStartFlow = () => {
+    setMode('chat');
+    setWorkflowStep('brand');
   };
 
+  // 品牌信息回调
   const handleBrandInfo = (info: BrandInfo) => {
     setBrandInfo(info);
-    if (currentPage) {
-      setCurrentPage({ ...currentPage, brandInfo: info });
+  };
+
+  // 提案确认 -> 打开模板选择器
+  const handleProposalConfirm = (proposal: { modules: { id: string; name: string; required: boolean }[] }) => {
+    setProposalModules(proposal.modules);
+    setShowTemplateSelector(true);
+  };
+
+  // 模板选择完成
+  const handleTemplateSelected = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    setShowTemplateSelector(false);
+    // 通知 chat 组件模板已选择
+    window.dispatchEvent(new CustomEvent('template-selected', { detail: templateId }));
+  };
+
+  // 生成完成
+  const handleGenerateComplete = () => {
+    setIsGenerating(false);
+    setGenerationComplete(true);
+  };
+
+  // 开始生成
+  const handleStartGenerate = () => {
+    setIsGenerating(true);
+    setGenerationComplete(false);
+    setWorkflowStep('generating');
+    // 5秒后生成完成
+    setTimeout(() => {
+      handleGenerateComplete();
+      setWorkflowStep('editing');
+    }, 5000);
+  };
+
+  // 进入编辑模式
+  const handleEnterEdit = () => {
+    setMode('edit');
+    setShowComponentLib(true);
+    // 初始化页面组件
+    if (proposalModules.length > 0) {
+      setCurrentPageComponents(proposalModules.filter(m => m.required).map(m => m.id));
+    } else {
+      setCurrentPageComponents(['product-title', 'product-specs', 'product-features', 'product-media', 'product-scenarios', 'tech-principle', 'quality-cert', 'faq', 'customer-reviews', 'cta-inquiry']);
     }
   };
 
-  const handleProposalConfirm = (_proposal: { modules: { id: string; name: string; required: boolean }[] }) => {
-    // Store proposal for generation
-  };
-
-  const handleGenerateComplete = (componentIds: string[]) => {
-    setCurrentPage({
-      id: Date.now().toString(),
-      components: componentIds,
-      brandInfo,
-    });
-  };
-
+  // 保存页面
   const handleSavePage = () => {
-    alert('页面已保存并发布！');
-    setWorkflowStep('done');
+    setShowSaveConfirm(true);
+  };
+  const handleConfirmSave = () => {
+    setShowSaveConfirm(false);
+    onBack();
   };
 
+  // 编辑模式 - 组件操作
   const handleDragStart = (componentId: string) => {
     setDraggedComponent(componentId);
   };
 
   const handleDrop = () => {
-    if (draggedComponent && currentPage) {
-      if (!currentPage.components.includes(draggedComponent)) {
-        setCurrentPage({
-          ...currentPage,
-          components: [...currentPage.components, draggedComponent],
-        });
-      }
-      setDraggedComponent(null);
+    if (draggedComponent && !currentPageComponents.includes(draggedComponent)) {
+      setCurrentPageComponents(prev => [...prev, draggedComponent]);
     }
+    setDraggedComponent(null);
   };
 
   const handleRemoveComponent = (componentId: string) => {
-    if (currentPage) {
-      setCurrentPage({
-        ...currentPage,
-        components: currentPage.components.filter((id) => id !== componentId),
-      });
-      if (selectedComponentId === componentId) {
-        setSelectedComponentId(null);
-      }
-    }
+    setCurrentPageComponents(prev => prev.filter(id => id !== componentId));
+    if (selectedComponentId === componentId) setSelectedComponentId(null);
   };
 
   const handleMoveComponent = (componentId: string, direction: 'up' | 'down') => {
-    if (!currentPage) return;
-    const index = currentPage.components.indexOf(componentId);
+    const index = currentPageComponents.indexOf(componentId);
     if (index === -1) return;
-
-    const newComponents = [...currentPage.components];
+    const newComponents = [...currentPageComponents];
     if (direction === 'up' && index > 0) {
       [newComponents[index - 1], newComponents[index]] = [newComponents[index], newComponents[index - 1]];
     } else if (direction === 'down' && index < newComponents.length - 1) {
       [newComponents[index], newComponents[index + 1]] = [newComponents[index + 1], newComponents[index]];
     }
-
-    setCurrentPage({ ...currentPage, components: newComponents });
+    setCurrentPageComponents(newComponents);
   };
 
   const filteredComponents = PAGE_COMPONENTS.filter(
-    (c) =>
-      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.category.toLowerCase().includes(searchTerm.toLowerCase())
+    (c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()) || c.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   const groupedComponents = COMPONENT_CATEGORIES.map((category) => ({
     category,
     components: filteredComponents.filter((c) => c.category === category),
   })).filter((g) => g.components.length > 0);
 
-  const selectedComponent = currentPage?.components.find((id) => id === selectedComponentId)
+  const selectedComponent = currentPageComponents.find((id) => id === selectedComponentId)
     ? PAGE_COMPONENTS.find((c) => c.id === selectedComponentId)
     : null;
 
-  const currentTemplate = selectedTemplate
-    ? INDUSTRY_TEMPLATES.find((t) => t.id === selectedTemplate)
-    : null;
+  const currentTemplate = selectedTemplate ? INDUSTRY_TEMPLATES.find((t) => t.id === selectedTemplate) : null;
 
   return (
     <div className="h-screen bg-gray-100 flex flex-col overflow-hidden">
       {/* Top Bar */}
       <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 flex-shrink-0">
         <div className="flex items-center gap-4">
-          <button
-            onClick={onBack}
-            className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-1"
-          >
+          <button onClick={onBack} className="text-gray-500 hover:text-gray-700 text-sm flex items-center gap-1">
             ← 返回
           </button>
           <div className="h-6 w-px bg-gray-200"></div>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-              D
-            </div>
+            <div className="w-7 h-7 rounded bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">D</div>
             <span className="font-semibold text-gray-800 text-sm">产品详情页设计器</span>
           </div>
           {currentTemplate && (
@@ -559,224 +667,177 @@ export default function DesignerWorkspace({ onBack }: { onBack: () => void }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowTemplateSelector(true)}
-            className="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
-          >
-            更换模板
-          </button>
-          <button
-            onClick={() => setShowAIChat(!showAIChat)}
-            className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
-              showAIChat
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'text-gray-600 border-gray-200 hover:bg-gray-50'
-            }`}
-          >
-            {showAIChat ? '隐藏AI助手' : '显示AI助手'}
-          </button>
-          <button className="px-4 py-1.5 text-xs text-white bg-green-600 rounded-lg hover:bg-green-700">
-            保存
-          </button>
-          <button className="px-4 py-1.5 text-xs text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-            发布
-          </button>
+          {mode === 'chat' && (
+            <button
+              onClick={() => setShowTemplateSelector(true)}
+              className="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
+            >
+              选择模板
+            </button>
+          )}
+          {mode === 'edit' && (
+            <>
+              <button
+                onClick={() => setShowTemplateSelector(true)}
+                className="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                更换模板
+              </button>
+              <button
+                onClick={() => setShowComponentLib(!showComponentLib)}
+                className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
+                  showComponentLib ? 'bg-blue-600 text-white border-blue-600' : 'text-gray-600 border-gray-200 hover:bg-gray-50'
+                }`}
+              >
+                {showComponentLib ? '隐藏组件库' : '显示组件库'}
+              </button>
+            </>
+          )}
+          {mode === 'edit' && (
+            <button
+              onClick={handleSavePage}
+              className="px-4 py-1.5 text-xs text-white bg-green-600 rounded-lg hover:bg-green-700"
+            >
+              保存发布
+            </button>
+          )}
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel - Component Library */}
-        <div className="w-64 bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
-          <div className="p-3 border-b border-gray-100">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">组件库</h3>
-            <input
-              type="text"
-              placeholder="搜索组件..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
-            />
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-2">
-            {groupedComponents.map((group) => (
-              <div key={group.category} className="mb-4">
-                <h4 className="text-xs font-medium text-gray-400 px-2 mb-2">{group.category}</h4>
-                <div className="space-y-1">
-                  {group.components.map((comp) => (
-                    <div
-                      key={comp.id}
-                      draggable
-                      onDragStart={() => handleDragStart(comp.id)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-100 hover:border-blue-300 hover:bg-blue-50 cursor-grab active:cursor-grabbing transition-all group"
-                    >
-                      <span className="text-sm flex-shrink-0">{comp.icon || '📦'}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-gray-700 truncate">{comp.name}</p>
-                        <p className="text-xs text-gray-400 truncate">{comp.description}</p>
+        {/* Left Panel - Component Library (only in edit mode) */}
+        {mode === 'edit' && showComponentLib && (
+          <div className="w-64 bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
+            <div className="p-3 border-b border-gray-100">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">组件库</h3>
+              <input
+                type="text"
+                placeholder="搜索组件..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+              />
+            </div>
+            <div className="flex-1 overflow-y-auto p-2">
+              {groupedComponents.map((group) => (
+                <div key={group.category} className="mb-4">
+                  <h4 className="text-xs font-medium text-gray-400 px-2 mb-2">{group.category}</h4>
+                  <div className="space-y-1">
+                    {group.components.map((comp) => (
+                      <div
+                        key={comp.id}
+                        draggable
+                        onDragStart={() => handleDragStart(comp.id)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-100 hover:border-blue-300 hover:bg-blue-50 cursor-grab active:cursor-grabbing transition-all group"
+                      >
+                        <span className="text-sm flex-shrink-0">{comp.icon || '📦'}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-gray-700 truncate">{comp.name}</p>
+                          <p className="text-xs text-gray-400 truncate">{comp.description}</p>
+                        </div>
+                        <span className="text-gray-300 group-hover:text-blue-400 text-xs">+</span>
                       </div>
-                      <span className="text-gray-300 group-hover:text-blue-400 text-xs">+</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Center - Canvas */}
-        <div className="flex-1 overflow-y-auto">
-          {selectedTemplate ? (
-            /* 选中模板后直接渲染模板真实内容 */
-            <div className="h-full flex flex-col">
-              {/* 编辑提示条 */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 px-6 py-2.5 flex items-center justify-between flex-shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-xs text-gray-700 font-medium">页面已生成 — 可直接编辑内容或调整布局</span>
+        {/* Center Area */}
+        {mode === 'flow' ? (
+          <div className="flex-1 overflow-hidden">
+            <FlowOverview onStart={handleStartFlow} />
+          </div>
+        ) : (
+          <div className="flex-1 flex overflow-hidden">
+            {mode === 'chat' && (
+              <div className="flex-1 flex overflow-hidden">
+                {/* AI Chat - Center */}
+                <div className="flex-1 overflow-hidden flex flex-col">
+                  <DesignerAIChat
+                    onStepChange={setWorkflowStep}
+                    onBrandInfo={handleBrandInfo}
+                    onProposalConfirm={handleProposalConfirm}
+                    onStartGenerate={handleStartGenerate}
+                    onEnterEdit={handleEnterEdit}
+                    onSavePage={handleSavePage}
+                    selectedTemplate={selectedTemplate}
+                    brandInfo={brandInfo}
+                    currentStep={workflowStep}
+                  />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500">{INDUSTRY_TEMPLATES.find(t => t.id === selectedTemplate)?.name || '模板'}</span>
-                  <span className="text-xs text-gray-400">•</span>
-                  <span className="text-xs text-gray-500">{brandInfo?.companyName || '示例企业'}</span>
-                </div>
+
+                {/* Preview Panel (right side during chat mode) */}
+                {isGenerating && (
+                  <div className="w-[480px] border-l border-gray-200 bg-white flex-shrink-0 overflow-hidden">
+                    <div className="h-10 bg-gray-50 border-b border-gray-200 flex items-center px-4">
+                      <span className="text-xs font-medium text-gray-500">实时预览</span>
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <GeneratingAnimation />
+                    </div>
+                  </div>
+                )}
+                {generationComplete && mode === 'chat' && selectedTemplate && (
+                  <div className="w-[480px] border-l border-gray-200 bg-white flex-shrink-0 overflow-hidden flex flex-col">
+                    <div className="h-10 bg-gray-50 border-b border-gray-200 flex items-center justify-between px-4">
+                      <span className="text-xs font-medium text-gray-500">页面预览</span>
+                      <button
+                        onClick={handleEnterEdit}
+                        className="text-xs px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-1"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        编辑页面
+                      </button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                      <TemplateCanvasContent templateId={selectedTemplate} brandInfo={brandInfo} />
+                    </div>
+                  </div>
+                )}
               </div>
-              {/* 模板内容直接展示 */}
+            )}
+
+            {mode === 'edit' && selectedTemplate && (
               <div className="flex-1 overflow-y-auto">
+                {/* 编辑提示条 */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 px-6 py-2.5 flex items-center justify-between flex-shrink-0 sticky top-0 z-10">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-xs text-gray-700 font-medium">页面已生成 — 可直接编辑内容或调整布局</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-500">{currentTemplate?.name || '模板'}</span>
+                    <span className="text-xs text-gray-400">•</span>
+                    <span className="text-xs text-gray-500">{brandInfo?.companyName || '示例企业'}</span>
+                  </div>
+                </div>
                 <TemplateCanvasContent templateId={selectedTemplate} brandInfo={brandInfo} />
               </div>
-            </div>
-          ) : !currentPage ? (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">📄</span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">开始设计产品详情页</h3>
-                <p className="text-sm text-gray-500 mb-6 max-w-md">
-                  通过右侧AI助手完成6步流程,智能生成符合行业规范的产品详情页
-                </p>
-                <button
-                  onClick={() => setShowAIChat(true)}
-                  className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
-                >
-                  开始AI设计流程
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="p-6">
-            <div
-              className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[600px] p-8"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
-            >
-              {currentPage.components.length === 0 ? (
-                <div className="h-96 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-xl">
-                  <div className="text-center">
-                    <p className="text-gray-400 text-sm mb-2">拖拽左侧组件到此处</p>
-                    <p className="text-gray-300 text-xs">或使用AI助手自动生成</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {currentPage.components.map((compId, index) => {
-                    const comp = PAGE_COMPONENTS.find((c) => c.id === compId);
-                    if (!comp) return null;
-                    const isSelected = selectedComponentId === compId;
+            )}
 
-                    return (
-                      <div
-                        key={compId}
-                        onClick={() => setSelectedComponentId(compId)}
-                        className={`relative border-2 rounded-xl p-6 transition-all cursor-pointer group ${
-                          isSelected
-                            ? 'border-blue-500 ring-2 ring-blue-100'
-                            : 'border-transparent hover:border-gray-200'
-                        }`}
-                      >
-                        <div className={`absolute top-2 right-2 flex gap-1 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleMoveComponent(compId, 'up'); }}
-                            className="w-7 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-gray-500 hover:text-blue-600 hover:border-blue-300 text-xs"
-                            title="上移"
-                          >
-                            ↑
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleMoveComponent(compId, 'down'); }}
-                            className="w-7 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-gray-500 hover:text-blue-600 hover:border-blue-300 text-xs"
-                            title="下移"
-                          >
-                            ↓
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleRemoveComponent(compId); }}
-                            className="w-7 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-gray-500 hover:text-red-600 hover:border-red-300 text-xs"
-                            title="删除"
-                          >
-                            ×
-                          </button>
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <span className="text-lg">{comp.icon || '📦'}</span>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-800 text-sm mb-1">{comp.name}</h4>
-                            <p className="text-xs text-gray-500 mb-3">{comp.description}</p>
-
-                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                              {comp.fields.map((field) => (
-                                <div key={field.key} className="mb-2 last:mb-0">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-400 w-20">{field.label}</span>
-                                    <div className="flex-1 h-6 bg-gray-200 rounded animate-pulse"></div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full">
-                          #{index + 1}
-                        </div>
-                      </div>
-                    );
-                  })}
-
-                  <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={handleDrop}
-                    className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-blue-300 hover:bg-blue-50 transition-all"
+            {mode === 'edit' && !selectedTemplate && (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center">
+                  <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm text-gray-500">请先选择一个模板</p>
+                  <button
+                    onClick={() => setShowTemplateSelector(true)}
+                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
                   >
-                    <p className="text-sm text-gray-400">拖拽组件到此处添加</p>
-                  </div>
+                    选择模板
+                  </button>
                 </div>
-              )}
-            </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Panel - AI Chat or Properties */}
-        {showAIChat ? (
-          <div className="w-80 flex-shrink-0">
-            <DesignerAIChat
-              onStepChange={setWorkflowStep}
-              onBrandInfo={handleBrandInfo}
-              onProposalConfirm={handleProposalConfirm}
-              onGenerateComplete={handleGenerateComplete}
-              onSavePage={handleSavePage}
-              selectedTemplate={selectedTemplate}
-              brandInfo={brandInfo}
-              currentStep={workflowStep}
-            />
+              </div>
+            )}
           </div>
-        ) : selectedComponent ? (
+        )}
+
+        {/* Right Panel - Properties (only in edit mode when component selected) */}
+        {mode === 'edit' && selectedComponent && (
           <div className="w-80 bg-white border-l border-gray-200 flex-shrink-0 overflow-y-auto">
             <div className="p-4 border-b border-gray-100">
               <h3 className="font-semibold text-gray-800 text-sm">属性编辑</h3>
@@ -807,20 +868,40 @@ export default function DesignerWorkspace({ onBack }: { onBack: () => void }) {
               ))}
             </div>
           </div>
-        ) : (
-          <div className="w-80 bg-white border-l border-gray-200 flex-shrink-0 flex items-center justify-center">
-            <p className="text-sm text-gray-400">选择画布中的组件以编辑属性</p>
-          </div>
         )}
       </div>
 
       {/* Template Selector Modal */}
       {showTemplateSelector && (
         <TemplateSelector
-          onSelect={handleTemplateSelect}
+          onSelect={handleTemplateSelected}
           onClose={() => setShowTemplateSelector(false)}
           currentIndustry={selectedTemplate || undefined}
         />
+      )}
+
+      {/* Save Confirm Dialog */}
+      {showSaveConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-96 max-w-[90vw]">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">确认保存页面？</h3>
+            <p className="text-sm text-gray-500 mb-6">保存后将返回设计器页面列表，新创建的详情页将出现在列表中。</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowSaveConfirm(false)}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleConfirmSave}
+                className="px-4 py-2 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700"
+              >
+                确认保存
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

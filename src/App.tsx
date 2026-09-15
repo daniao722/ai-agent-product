@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import ContentSidebar from './components/content-center/ContentSidebar';
 import ContentHeader from './components/content-center/ContentHeader';
 import Dashboard from './components/Dashboard';
+import GrowthFlywheel from './components/GrowthFlywheel';
 import ContentManagement from './components/website/ContentManagement';
 import ProductManagement from './components/website/ProductManagement';
 import NavigationManagement from './components/website/NavigationManagement';
@@ -13,6 +14,7 @@ import SecurityManagement from './components/website/SecurityManagement';
 import DomainManagement from './components/website/DomainManagement';
 // 设计器
 import DesignerLogin from './components/designer/DesignerLogin';
+import DesignerDashboard from './components/designer/DesignerDashboard';
 import DesignerWorkspace from './components/designer/DesignerWorkspace';
 import TemplatePreview from './components/designer/TemplatePreview';
 // 营销增长中心
@@ -61,6 +63,11 @@ import FollowUpManagement from './components/sales/FollowUpManagement';
 import SalesFunnel from './components/sales/SalesFunnel';
 import SalesEnablement from './components/sales/SalesEnablement';
 import DealReview from './components/sales/DealReview';
+// AI智能中心（PRD v1.4：知识基座 + 五大智能体，一期2个）
+import AgentOverview from './components/ai-agent/AgentOverview';
+import KnowledgeBase from './components/ai-agent/KnowledgeBase';
+import AgentVisitorAnalysis from './components/ai-agent/AgentVisitorAnalysis';
+import AgentContentOps from './components/ai-agent/AgentContentOps';
 // 服务体验中心
 import ServiceOverview from './components/service/ServiceOverview';
 import AISupport from './components/service/AISupport';
@@ -87,6 +94,7 @@ import RiskMonitoring from './components/global/RiskMonitoring';
 
 const pageComponents: Record<string, React.ComponentType> = {
   dashboard: Dashboard,
+  'growth-flywheel': GrowthFlywheel,
   // 网站管理中心
   content: ContentManagement,
   products: ProductManagement,
@@ -150,6 +158,11 @@ const pageComponents: Record<string, React.ComponentType> = {
   'sales-funnel': SalesFunnel,
   'sales-enablement': SalesEnablement,
   'deal-review': DealReview,
+  // AI智能中心（PRD v1.4 一期：总览 + 知识基座 + 2 个智能体）
+  'agent-overview': AgentOverview,
+  'ai-knowledge-base': KnowledgeBase,
+  'agent-visitor': AgentVisitorAnalysis,
+  'agent-content': AgentContentOps,
   // 服务体验中心
   service: ServiceOverview,
   'service-overview': ServiceOverview,
@@ -179,12 +192,14 @@ const pageComponents: Record<string, React.ComponentType> = {
   'risk-control': RiskMonitoring,
   // 设计器
   'designer-login': DesignerLogin,
+  'designer-dashboard': DesignerDashboard,
   'designer-workspace': DesignerWorkspace,
   'template-preview': TemplatePreview,
 };
 
 const pageToCenter: Record<string, string> = {
   dashboard: 'dashboard',
+  'growth-flywheel': 'dashboard',
   // 网站管理中心
   content: 'website',
   products: 'website',
@@ -249,6 +264,11 @@ const pageToCenter: Record<string, string> = {
   'sales-funnel': 'sales',
   'sales-enablement': 'sales',
   'deal-review': 'sales',
+  // AI智能中心（PRD v1.4 一期）
+  'agent-overview': 'ai-agent',
+  'ai-knowledge-base': 'ai-agent',
+  'agent-visitor': 'ai-agent',
+  'agent-content': 'ai-agent',
   // 服务体验中心
   service: 'service',
   'service-overview': 'service',
@@ -278,6 +298,7 @@ const pageToCenter: Record<string, string> = {
   'risk-control': 'global',
   // 设计器
   'designer-login': 'designer',
+  'designer-dashboard': 'designer',
   'designer-workspace': 'designer',
   'template-preview': 'designer',
 };
@@ -288,7 +309,8 @@ export default function App() {
     if (hash === '/designer' || hash === '/designer-login') return 'designer-login';
     if (hash === '/designer/workspace') return 'designer-workspace';
     if (hash.startsWith('/template-preview/')) return 'template-preview';
-    return 'dashboard';
+    if (hash === '/dashboard') return 'dashboard';
+    return 'growth-flywheel';
   });
   const [currentCenter, setCurrentCenter] = useState(() => {
     const hash = window.location.hash.slice(1);
@@ -352,12 +374,30 @@ export default function App() {
   // Designer pages have their own layout
   if (isDesigner) {
     if (currentPage === 'designer-login') {
-      return <DesignerLogin onLogin={() => setCurrentPage('designer-workspace')} />;
+      return <DesignerLogin onLogin={() => setCurrentPage('designer-dashboard')} />;
     }
     if (currentPage === 'template-preview') {
       return <TemplatePreview />;
     }
-    return <DesignerWorkspace onBack={() => setCurrentPage('dashboard')} />;
+    if (currentPage === 'designer-dashboard') {
+      return (
+        <DesignerDashboard
+          onBack={() => setCurrentPage('dashboard')}
+          onNewPage={() => setCurrentPage('designer-workspace')}
+          onEditPage={(page) => {
+            if (page.source === 'detail') {
+              setCurrentPage('designer-workspace');
+            }
+          }}
+        />
+      );
+    }
+    return <DesignerWorkspace onBack={() => setCurrentPage('designer-dashboard')} />;
+  }
+
+  // Growth Flywheel: standalone full-screen layout
+  if (currentPage === 'growth-flywheel') {
+    return <GrowthFlywheel onNavigate={handlePageChange} />;
   }
 
   // content-hub pages need onNavigate prop, other pages don't

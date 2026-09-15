@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Sparkles,
   Building2,
@@ -15,6 +15,15 @@ import {
   Eye,
   ArrowRight,
 } from 'lucide-react';
+import {
+  getIndustryModuleConfigs,
+  getRequiredModules,
+  getOptionalModules,
+  getIndustryName,
+  DEFAULT_INDUSTRY_ID,
+  DEFAULT_INDUSTRY_NAME,
+  getSafeIndustryName,
+} from './pageComponents';
 
 // ========== Types ==========
 interface Message {
@@ -49,106 +58,26 @@ interface StepProgress {
   label: string;
 }
 
-export type WorkflowStep = 'idle' | 'brand' | 'industry' | 'proposal' | 'generating' | 'editing' | 'done';
+export type WorkflowStep = 'idle' | 'brand' | 'industry' | 'proposal' | 'template' | 'generating' | 'editing' | 'done';
 
 // ========== Constants ==========
 const STEPS = [
   { key: 'brand', label: '品牌信息', icon: Building2 },
   { key: 'industry', label: '行业规范', icon: FileText },
   { key: 'proposal', label: '设计提案', icon: Layout },
+  { key: 'template', label: '选择模板', icon: Palette },
   { key: 'generating', label: 'AI生成', icon: Wand2 },
-  { key: 'editing', label: '编辑调整', icon: Palette },
+  { key: 'editing', label: '编辑调整', icon: Edit3 },
   { key: 'done', label: '保存发布', icon: Save },
 ] as const;
-
-const INDUSTRY_MODULES: Record<string, { id: string; name: string; required: boolean }[]> = {
-  'mechanical-equipment': [
-    { id: 'product-title', name: '产品标题与核心卖点', required: true },
-    { id: 'product-specs', name: '产品规格参数表', required: true },
-    { id: 'product-features', name: '产品功能/性能介绍', required: true },
-    { id: 'product-media', name: '产品图片/视频展示', required: true },
-    { id: 'product-scenarios', name: '应用场景/使用案例', required: true },
-    { id: 'tech-principle', name: '技术原理/工艺流程', required: true },
-    { id: 'quality-cert', name: '质量认证/检测报告', required: true },
-    { id: 'after-sales', name: '售后服务承诺', required: true },
-    { id: 'packaging-logistics', name: '包装与物流信息', required: false },
-    { id: 'installation-guide', name: '安装/使用指南', required: false },
-    { id: 'faq', name: '常见问题FAQ', required: true },
-    { id: 'customer-reviews', name: '客户评价/案例见证', required: true },
-    { id: 'competitive-advantage', name: '对比优势/竞品分析', required: false },
-    { id: 'customization', name: '定制服务说明', required: false },
-    { id: 'supply-chain', name: '供应链/产能说明', required: false },
-    { id: 'rd-team', name: '研发团队/专利展示', required: false },
-    { id: 'success-cases', name: '合作客户/成功案例', required: true },
-    { id: 'maintenance', name: '维护保养指南', required: false },
-    { id: 'cta-inquiry', name: '询盘/购买引导CTA', required: true },
-  ],
-  'auto-parts': [
-    { id: 'product-title', name: '产品标题与核心卖点', required: true },
-    { id: 'product-specs', name: '产品规格参数表', required: true },
-    { id: 'product-features', name: '产品功能/性能介绍', required: true },
-    { id: 'product-media', name: '产品图片/视频展示', required: true },
-    { id: 'tech-principle', name: '技术原理/工艺流程', required: true },
-    { id: 'quality-cert', name: '质量认证/检测报告', required: true },
-    { id: 'brand-story', name: '品牌故事/企业实力', required: true },
-    { id: 'compatibility', name: '兼容性/适配信息', required: true },
-    { id: 'customer-reviews', name: '客户评价/案例见证', required: true },
-    { id: 'competitive-advantage', name: '对比优势/竞品分析', required: false },
-    { id: 'supply-chain', name: '供应链/产能说明', required: true },
-    { id: 'rd-team', name: '研发团队/专利展示', required: false },
-    { id: 'success-cases', name: '合作客户/成功案例', required: true },
-    { id: 'compliance', name: '法规合规声明', required: true },
-    { id: 'cta-inquiry', name: '询盘/购买引导CTA', required: true },
-  ],
-  'biomedical': [
-    { id: 'product-title', name: '产品标题与核心卖点', required: true },
-    { id: 'product-specs', name: '产品规格参数表', required: true },
-    { id: 'product-features', name: '产品功能/性能介绍', required: true },
-    { id: 'product-media', name: '产品图片/视频展示', required: true },
-    { id: 'tech-principle', name: '技术原理/工艺流程', required: true },
-    { id: 'quality-cert', name: '质量认证/检测报告', required: true },
-    { id: 'ingredients', name: '营养成分/成分说明', required: true },
-    { id: 'target-audience', name: '适用人群/禁忌说明', required: true },
-    { id: 'safety-notes', name: '安全注意事项', required: true },
-    { id: 'compliance', name: '法规合规声明', required: true },
-    { id: 'environmental', name: '环保/可持续性说明', required: false },
-    { id: 'rd-team', name: '研发团队/专利展示', required: true },
-    { id: 'tech-docs', name: '技术文档下载', required: true },
-    { id: 'faq', name: '常见问题FAQ', required: true },
-    { id: 'cta-inquiry', name: '询盘/购买引导CTA', required: true },
-  ],
-  'industrial-products': [
-    { id: 'product-title', name: '产品标题与核心卖点', required: true },
-    { id: 'product-specs', name: '产品规格参数表', required: true },
-    { id: 'product-features', name: '产品功能/性能介绍', required: true },
-    { id: 'product-scenarios', name: '应用场景/使用案例', required: true },
-    { id: 'product-media', name: '产品图片/视频展示', required: true },
-    { id: 'quality-cert', name: '质量认证/检测报告', required: true },
-    { id: 'compatibility', name: '兼容性/适配信息', required: true },
-    { id: 'customization', name: '定制服务说明', required: false },
-    { id: 'packaging-logistics', name: '包装与物流信息', required: false },
-    { id: 'faq', name: '常见问题FAQ', required: true },
-    { id: 'customer-reviews', name: '客户评价/案例见证', required: true },
-    { id: 'competitive-advantage', name: '对比优势/竞品分析', required: false },
-    { id: 'supply-chain', name: '供应链/产能说明', required: false },
-    { id: 'maintenance', name: '维护保养指南', required: false },
-    { id: 'cta-inquiry', name: '询盘/购买引导CTA', required: true },
-  ],
-};
-
-const INDUSTRY_NAMES: Record<string, string> = {
-  'mechanical-equipment': '机械设备',
-  'auto-parts': '汽车零部件',
-  'biomedical': '生物医药',
-  'industrial-products': '工业制品',
-};
 
 // ========== Component ==========
 interface DesignerAIChatProps {
   onStepChange: (step: WorkflowStep) => void;
   onBrandInfo: (info: BrandInfo) => void;
-  onProposalConfirm: (proposal: DesignProposal) => void;
-  onGenerateComplete: (components: string[]) => void;
+  onProposalConfirm: (proposal: { modules: { id: string; name: string; required: boolean }[] }) => void;
+  onStartGenerate: () => void;
+  onEnterEdit: () => void;
   onSavePage: () => void;
   selectedTemplate: string | null;
   brandInfo: BrandInfo | null;
@@ -159,7 +88,8 @@ export default function DesignerAIChat({
   onStepChange,
   onBrandInfo,
   onProposalConfirm,
-  onGenerateComplete,
+  onStartGenerate,
+  onEnterEdit,
   onSavePage,
   selectedTemplate,
   brandInfo,
@@ -168,7 +98,7 @@ export default function DesignerAIChat({
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: '👋 您好！我是产品详情页AI设计助手。\n\n我将通过6个步骤帮您完成高质量产品详情页的设计：\n\n1️⃣ 获取企业品牌信息\n2️⃣ 分析行业内容规范\n3️⃣ 生成设计提案\n4️⃣ AI创建详情页\n5️⃣ 自定义编辑调整\n6️⃣ 保存发布\n\n' + (selectedTemplate ? `已选择行业模板：**${INDUSTRY_NAMES[selectedTemplate] || selectedTemplate}**\n\n` : '') + '让我们从第一步开始 — 获取您的企业品牌信息。',
+      content: '👋 您好！我是产品详情页AI设计助手。\n\n我将通过7个步骤帮您完成高质量产品详情页的设计：\n\n1️ 分析品牌信息\n2️⃣ 匹配行业规范\n3️⃣ 生成设计提案\n4️⃣ 选择页面模板\n5️⃣ AI生成页面\n6️⃣ 编辑调整\n7️ 保存发布\n\n让我们从第一步开始 — 分析您的企业品牌信息。',
       timestamp: new Date(),
     },
   ]);
@@ -176,6 +106,21 @@ export default function DesignerAIChat({
   const [isProcessing, setIsProcessing] = useState(false);
   const [proposalModules, setProposalModules] = useState<{ id: string; name: string; required: boolean }[]>([]);
   const [proposalEditable, setProposalEditable] = useState(false);
+  const [templateSelected, setTemplateSelected] = useState(false);
+
+  // 监听模板选择事件
+  useEffect(() => {
+    const handleTemplateSelected = (e: Event) => {
+      const templateId = (e as CustomEvent).detail;
+      setTemplateSelected(true);
+      addMessage('assistant', `✅ 已选择模板：**${getIndustryName(templateId)}**\n\n接下来我将开始AI生成页面，请稍候...`);
+      setTimeout(() => {
+        onStartGenerate();
+      }, 1000);
+    };
+    window.addEventListener('template-selected', handleTemplateSelected);
+    return () => window.removeEventListener('template-selected', handleTemplateSelected);
+  }, []);
 
   const addMessage = (role: 'assistant' | 'user', content: string, extra?: Partial<Message>) => {
     setMessages((prev) => [...prev, { role, content, timestamp: new Date(), ...extra }]);
@@ -203,7 +148,7 @@ export default function DesignerAIChat({
           ? text.match(/(.+?)(?:公司|科技|集团|有限)/)?.[0] + (text.includes('公司') ? '公司' : text.includes('科技') ? '科技' : '集团') || '示例企业'
           : '示例企业',
         logo: '',
-        industry: selectedTemplate ? INDUSTRY_NAMES[selectedTemplate] || '' : '通用制造',
+        industry: selectedTemplate ? getIndustryName(selectedTemplate) : DEFAULT_INDUSTRY_NAME,
         mainProducts: text,
         primaryColor: '#1e40af',
         secondaryColor: '#3b82f6',
@@ -230,21 +175,23 @@ export default function DesignerAIChat({
 
   // Step 2: Industry Analysis
   const handleIndustryAnalysis = (industry?: string) => {
-    const targetIndustry = industry || (selectedTemplate ? INDUSTRY_NAMES[selectedTemplate] : '通用制造');
-    const templateKey = selectedTemplate || 'mechanical-equipment';
-    const modules = INDUSTRY_MODULES[templateKey] || INDUSTRY_MODULES['mechanical-equipment'];
+    const templateKey = selectedTemplate || DEFAULT_INDUSTRY_ID;
+    const targetIndustry = industry || (selectedTemplate ? getIndustryName(selectedTemplate) : DEFAULT_INDUSTRY_NAME);
+    const modules = getIndustryModuleConfigs(templateKey);
 
     simulateAI(() => {
-      const requiredCount = modules.filter((m) => m.required).length;
-      const optionalCount = modules.length - requiredCount;
+      const requiredModules = getRequiredModules(templateKey);
+      const optionalModules = getOptionalModules(templateKey);
+      const requiredCount = requiredModules.length;
+      const optionalCount = optionalModules.length;
 
       addMessage('assistant',
         `📋 **${targetIndustry}行业 — 产品详情页内容规范分析完成**\n\n` +
         `根据行业标准，建议页面包含 **${modules.length}** 个内容模块：\n\n` +
         `**必选模块（${requiredCount}个）：**\n` +
-        modules.filter((m) => m.required).map((m, i) => `  ${i + 1}. ${m.name}`).join('\n') +
+        requiredModules.map((m, i) => `  ${i + 1}. ${m.name}`).join('\n') +
         `\n\n**推荐模块（${optionalCount}个）：**\n` +
-        modules.filter((m) => !m.required).map((m) => `  • ${m.name}`).join('\n') +
+        optionalModules.map((m) => `  • ${m.name}`).join('\n') +
         `\n\n接下来我将基于以上规范生成设计提案，您可以修改模块配置。`
       );
 
@@ -259,7 +206,7 @@ export default function DesignerAIChat({
   // Step 3: Generate Proposal
   const handleGenerateProposal = (modules?: { id: string; name: string; required: boolean }[], industry?: string) => {
     const targetModules = modules || proposalModules;
-    const targetIndustry = industry || (selectedTemplate ? INDUSTRY_NAMES[selectedTemplate] : '通用制造');
+    const targetIndustry = industry || (selectedTemplate ? getIndustryName(selectedTemplate) : DEFAULT_INDUSTRY_NAME);
 
     const proposal: DesignProposal = {
       title: `${brandInfo?.companyName || '企业'} — ${targetIndustry}产品详情页设计方案`,
@@ -285,61 +232,15 @@ export default function DesignerAIChat({
 
   const confirmProposal = () => {
     setProposalEditable(false);
-    const proposal: DesignProposal = {
-      title: `${brandInfo?.companyName || '企业'}产品详情页设计方案`,
-      modules: proposalModules.filter((m) => m.required),
-      styleNotes: `品牌风格已确认`,
+    const proposal = {
+      modules: proposalModules,
     };
 
-    addMessage('user', '✅ 确认提案，开始生成');
+    addMessage('user', '✅ 确认提案，下一步选择模板');
     onProposalConfirm(proposal);
-    onStepChange('generating');
+    onStepChange('template');
 
-    // Step 4: Generate Page
-    simulateAI(() => {
-      addMessage('assistant', '', {
-        type: 'progress',
-        progressData: { current: 1, total: 4, label: '分析行业规范与品牌风格...' },
-      });
-
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev.slice(0, -1),
-          { role: 'assistant' as const, content: '', timestamp: new Date(), type: 'progress', progressData: { current: 2, total: 4, label: '生成页面组件与布局...' } },
-        ]);
-      }, 1200);
-
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev.slice(0, -1),
-          { role: 'assistant' as const, content: '', timestamp: new Date(), type: 'progress', progressData: { current: 3, total: 4, label: '应用品牌样式与交互...' } },
-        ]);
-      }, 2400);
-
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev.slice(0, -1),
-          { role: 'assistant' as const, content: '', timestamp: new Date(), type: 'progress', progressData: { current: 4, total: 4, label: '优化细节与响应式适配...' } },
-        ]);
-      }, 3600);
-
-      setTimeout(() => {
-        const componentIds = proposalModules.filter((m) => m.required).map((m) => m.id);
-        onGenerateComplete(componentIds);
-        onStepChange('editing');
-
-        addMessage('assistant',
-          `🎉 **产品详情页生成完成！**\n\n` +
-          `已生成 **${componentIds.length}** 个内容模块：\n` +
-          proposalModules.filter((m) => m.required).map((m, i) => `  ✅ ${m.name}`).join('\n') +
-          `\n\n页面已在右侧画布中展示，您可以：\n` +
-          `• 拖拽左侧组件库添加新模块\n` +
-          `• 点击画布中的模块编辑内容\n` +
-          `• 调整模块顺序和样式\n\n` +
-          `编辑完成后点击「保存」即可发布页面。`
-        );
-      }, 4800);
-    }, 500);
+    addMessage('assistant', '请在右侧选择适合您行业的页面模板，或输入参考页面URL。');
   };
 
   const handleSendMessage = () => {
@@ -361,7 +262,7 @@ export default function DesignerAIChat({
         addMessage('user', input);
         setInput('');
         simulateAI(() => {
-          addMessage('assistant', '已更新设计提案，请查看右侧提案内容并确认。');
+          addMessage('assistant', '已更新设计提案，请查看提案内容并确认。');
           handleGenerateProposal();
         });
         break;
@@ -438,7 +339,7 @@ export default function DesignerAIChat({
           className="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center justify-center gap-1"
         >
           <CheckCircle2 className="w-4 h-4" />
-          确认提案，开始生成
+          确认提案，选择模板
         </button>
       )}
     </div>
@@ -497,12 +398,13 @@ export default function DesignerAIChat({
           <div>
             <h3 className="font-semibold text-gray-800 text-sm">AI 生成助手</h3>
             <p className="text-xs text-gray-500">
-              {currentStep === 'brand' && '步骤 1/6 — 获取品牌信息'}
-              {currentStep === 'industry' && '步骤 2/6 — 分析行业规范'}
-              {currentStep === 'proposal' && '步骤 3/6 — 确认设计提案'}
-              {currentStep === 'generating' && '步骤 4/6 — AI生成页面'}
-              {currentStep === 'editing' && '步骤 5/6 — 编辑调整'}
-              {currentStep === 'done' && '步骤 6/6 — 保存发布'}
+              {currentStep === 'brand' && '步骤 1/7 — 分析品牌信息'}
+              {currentStep === 'industry' && '步骤 2/7 — 匹配行业规范'}
+              {currentStep === 'proposal' && '步骤 3/7 — 生成设计提案'}
+              {currentStep === 'template' && '步骤 4/7 — 选择页面模板'}
+              {currentStep === 'generating' && '步骤 5/7 — AI生成页面'}
+              {currentStep === 'editing' && '步骤 6/7 — 编辑调整'}
+              {currentStep === 'done' && '步骤 7/7 — 保存发布'}
               {currentStep === 'idle' && '准备开始'}
             </p>
           </div>
@@ -575,18 +477,27 @@ export default function DesignerAIChat({
             <CheckCircle2 className="w-4 h-4 text-green-600" />
             <span className="text-sm font-medium text-green-800">页面已生成，可以编辑调整</span>
           </div>
-          <button
-            onClick={onSavePage}
-            className="w-full py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center justify-center gap-1"
-          >
-            <Save className="w-4 h-4" />
-            保存并发布页面
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={onEnterEdit}
+              className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center justify-center gap-1"
+            >
+              <Edit3 className="w-4 h-4" />
+              进入编辑模式
+            </button>
+            <button
+              onClick={onSavePage}
+              className="flex-1 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center justify-center gap-1"
+            >
+              <Save className="w-4 h-4" />
+              保存发布
+            </button>
+          </div>
         </div>
       )}
 
       {/* Input */}
-      {currentStep !== 'done' && currentStep !== 'editing' && (
+      {currentStep !== 'done' && currentStep !== 'editing' && currentStep !== 'template' && (
         <div className="p-3 border-t border-gray-200">
           <div className="flex gap-2">
             <input

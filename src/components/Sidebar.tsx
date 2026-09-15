@@ -12,6 +12,9 @@ import {
   Menu,
   X,
   Palette,
+  Sparkles,
+  Brain,
+  Bot,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,8 +23,9 @@ interface SidebarProps {
   onPageChange: (page: string) => void;
 }
 
-const centerMenus: Record<string, { id: string; label: string; icon?: React.ElementType; path?: string }[]> = {
+const centerMenus: Record<string, { id: string; label: string; icon?: React.ElementType; path?: string; comingSoon?: boolean }[]> = {
   dashboard: [
+    { id: 'growth-flywheel', label: 'AI 增长飞轮', icon: Sparkles },
     { id: 'dashboard', label: '概览', icon: LayoutDashboard },
     { id: 'designer-login', label: '设计器', icon: Palette },
   ],
@@ -64,6 +68,15 @@ const centerMenus: Record<string, { id: string; label: string; icon?: React.Elem
     { id: 'sales-enablement', label: 'AI销售赋能' },
     { id: 'deal-review', label: '成交复盘与优化' },
   ],
+  'ai-agent': [
+    { id: 'agent-overview', label: '总览', icon: LayoutDashboard },
+    { id: 'ai-knowledge-base', label: '知识库底座' },
+    { id: 'agent-visitor', label: 'AI访客行为分析' },
+    { id: 'agent-content', label: 'AI内容运营' },
+    { id: 'agent-personalize', label: 'AI个性化体验', comingSoon: true },
+    { id: 'agent-service', label: 'AI智能客服PRO', comingSoon: true },
+    { id: 'agent-abtest', label: 'AI A/B测试', comingSoon: true },
+  ],
   service: [
     { id: 'service-overview', label: '概览' },
     { id: 'ai-support', label: 'AI客服' },
@@ -103,6 +116,7 @@ const centerIcons: Record<string, React.ElementType> = {
   analytics: BarChart3,
   global: Globe2,
   designer: Palette,
+  'ai-agent': Brain,
 };
 
 const centerNames: Record<string, string> = {
@@ -116,6 +130,7 @@ const centerNames: Record<string, string> = {
   analytics: '增长智能',
   global: '全球拓展',
   designer: '设计器',
+  'ai-agent': 'AI智能',
 };
 
 export default function Sidebar({ currentPage, currentCenter, onPageChange }: SidebarProps) {
@@ -159,18 +174,27 @@ export default function Sidebar({ currentPage, currentCenter, onPageChange }: Si
             <button
               key={item.id}
               onClick={() => {
+                if (item.comingSoon) {
+                  alert(`${item.label} · 即将上线，敬请期待`);
+                  return;
+                }
                 onPageChange(item.id);
                 setIsMobileMenuOpen(false);
               }}
               className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-200 ${
-                isActive(item.id)
+                item.comingSoon
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : isActive(item.id)
                   ? 'bg-blue-50 text-blue-600 font-medium border-r-2 border-blue-600'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               {item.icon && <item.icon className="w-4 h-4 flex-shrink-0" />}
               {!item.icon && <div className="w-4 h-4 flex-shrink-0" />}
-              <span className="text-sm">{item.label}</span>
+              <span className={`text-sm ${item.comingSoon ? 'line-through' : ''}`}>{item.label}</span>
+              {item.comingSoon && (
+                <span className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-400">即将上线</span>
+              )}
             </button>
           ))}
         </nav>
