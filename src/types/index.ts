@@ -159,3 +159,167 @@ export interface DashboardStats {
   customerSatisfaction: number;
   activeCampaigns: number;
 }
+
+// ── Marketing Studio types (from marketing-frontend integration) ────────
+export type FlowState =
+  | 'IDLE'
+  | 'DRAFTING_INTENT'
+  | 'RESEARCHING'
+  | 'COPY_DRAFT'
+  | 'PAGE_GENERATING'
+  | 'PAGE_EDITING'
+  | 'PUBLISHED'
+
+export type PageType =
+  | 'product-marketing'
+  | 'lead-gen'
+  | 'brand'
+  | 'promotion'
+  | 'exhibition'
+
+export type MessageRole = 'user' | 'assistant' | 'system'
+export type MessageType = 'text' | 'thinking' | 'chips' | 'tool_call' | 'tool_result' | 'draft_section' | 'image'
+
+export interface ChipOption {
+  id: string
+  label: string
+}
+
+export interface ChatMessage {
+  id: string
+  role: MessageRole
+  type: MessageType
+  content: string
+  chips?: ChipOption[]
+  timestamp: number
+  agentName?: string
+  isStreaming?: boolean
+  imageUrl?: string
+  imagePlacement?: string
+}
+
+export type AgentStep = 'research' | 'copywriting' | 'ui-design' | 'code-build'
+export type StepStatus = 'pending' | 'active' | 'done'
+
+export interface ProgressStep {
+  id: AgentStep
+  label: string
+  status: StepStatus
+  artifact?: string
+}
+
+export type SectionStatus = 'pending' | 'confirmed' | 'editing'
+export type DataSource = 'ai' | 'backend' | 'hybrid'
+
+export interface DraftSection {
+  id: string
+  title: string
+  content: string
+  dataSource: DataSource
+  status: SectionStatus
+  bindingInfo?: string
+  imageDescription?: string
+}
+
+export interface RecognizedInfo {
+  industry?: string
+  mainProducts?: string
+  targetMarket?: string
+  competitors?: string[]
+  language?: string
+  sellingPoints?: string[]
+  certifications?: string[]
+  companyName?: string
+  primaryColor?: string
+}
+
+export interface GeneratedImage {
+  url: string
+  placement: string
+  prompt: string
+  isMock: boolean
+}
+
+export interface CompanyInfo {
+  name: string
+  industry: string
+  main_products: string
+  website: string
+  logo_url: string
+  employee_count: string
+  founded_year: string
+  data_source: string
+}
+
+export interface ProductOption {
+  id: string
+  name: string
+  model: string
+  category: string
+  imageUrl: string
+  price: string
+  url: string
+  certs: string[]
+}
+
+export interface SidebarFields {
+  competitorUrls: string
+  sellingPoints: string
+  targetAudience: string
+  contactInfo: string
+  selectedForms: string[]
+  selectedProducts: ProductOption[]
+  logoUrl: string
+  heroImageUrl: string
+  primaryColor: string
+  language: string
+  targetRegion: string
+  enableImageGen: boolean
+}
+
+export const defaultSidebarFields: SidebarFields = {
+  competitorUrls: '',
+  sellingPoints: '',
+  targetAudience: '',
+  contactInfo: '',
+  selectedForms: [],
+  selectedProducts: [],
+  logoUrl: '',
+  heroImageUrl: '',
+  primaryColor: '#4F46E5',
+  language: '中文简体',
+  targetRegion: '中国大陆',
+  enableImageGen: false,
+}
+
+export interface SessionState {
+  sessionId: string
+  flowState: FlowState
+  pageType: PageType | null
+  recognizedInfo: RecognizedInfo
+  messages: ChatMessage[]
+  draftSections: DraftSection[]
+  generatedHtml: string
+  progressSteps: ProgressStep[]
+}
+
+export type SSEEventType =
+  | 'text'
+  | 'thinking'
+  | 'tool_call'
+  | 'tool_result'
+  | 'question'
+  | 'draft_section'
+  | 'page_patch'
+  | 'flow_state'
+  | 'step_update'
+  | 'recognized_info'
+  | 'image_generated'
+  | 'done'
+  | 'error'
+
+export interface SSEEvent {
+  type: SSEEventType
+  data: Record<string, unknown>
+  sessionId?: string
+}

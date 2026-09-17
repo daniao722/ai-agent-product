@@ -68,6 +68,7 @@ import AgentOverview from './components/ai-agent/AgentOverview';
 import KnowledgeBase from './components/ai-agent/KnowledgeBase';
 import AgentVisitorAnalysis from './components/ai-agent/AgentVisitorAnalysis';
 import AgentContentOps from './components/ai-agent/AgentContentOps';
+import MarketingStudio from './pages/studio/MarketingStudio';
 // 服务体验中心
 import ServiceOverview from './components/service/ServiceOverview';
 import AISupport from './components/service/AISupport';
@@ -163,6 +164,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   'ai-knowledge-base': KnowledgeBase,
   'agent-visitor': AgentVisitorAnalysis,
   'agent-content': AgentContentOps,
+  'marketing-studio': MarketingStudio,
   // 服务体验中心
   service: ServiceOverview,
   'service-overview': ServiceOverview,
@@ -269,6 +271,7 @@ const pageToCenter: Record<string, string> = {
   'ai-knowledge-base': 'ai-agent',
   'agent-visitor': 'ai-agent',
   'agent-content': 'ai-agent',
+  'marketing-studio': 'marketing',
   // 服务体验中心
   service: 'service',
   'service-overview': 'service',
@@ -309,8 +312,8 @@ export default function App() {
     if (hash === '/designer' || hash === '/designer-login') return 'designer-login';
     if (hash === '/designer/workspace') return 'designer-workspace';
     if (hash.startsWith('/template-preview/')) return 'template-preview';
-    if (hash === '/dashboard') return 'dashboard';
-    return 'growth-flywheel';
+    if (hash === '/growth-flywheel') return 'growth-flywheel';
+    return 'dashboard';
   });
   const [currentCenter, setCurrentCenter] = useState(() => {
     const hash = window.location.hash.slice(1);

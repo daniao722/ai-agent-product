@@ -42,6 +42,7 @@ const centerMenus: Record<string, { id: string; label: string; icon?: React.Elem
     { id: 'marketing-overview', label: '概览' },
     { id: 'conversion-diagnosis', label: '转化诊断' },
     { id: 'auto-optimization', label: '自动优化' },
+    { id: 'marketing-studio', label: '智能营销页工作台' },
     { id: 'design-work-order', label: '设计工单' },
     { id: 'seo-optimization', label: '智能SEO优化' },
     { id: 'channels', label: '渠道推荐' },
