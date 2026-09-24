@@ -15,6 +15,7 @@ import {
   Sparkles,
   Brain,
   Bot,
+  Shield,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -27,6 +28,7 @@ const centerMenus: Record<string, { id: string; label: string; icon?: React.Elem
   dashboard: [
     { id: 'growth-flywheel', label: 'AI 增长飞轮', icon: Sparkles },
     { id: 'dashboard', label: '概览', icon: LayoutDashboard },
+    { id: 'ai-ready', label: 'AI Ready', icon: Shield },
     { id: 'designer-login', label: '设计器', icon: Palette },
   ],
   website: [

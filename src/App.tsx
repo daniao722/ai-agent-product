@@ -5,6 +5,7 @@ import ContentSidebar from './components/content-center/ContentSidebar';
 import ContentHeader from './components/content-center/ContentHeader';
 import Dashboard from './components/Dashboard';
 import GrowthFlywheel from './components/GrowthFlywheel';
+import AIReady from './components/dashboard/AIReady';
 import ContentManagement from './components/website/ContentManagement';
 import ProductManagement from './components/website/ProductManagement';
 import NavigationManagement from './components/website/NavigationManagement';
@@ -96,6 +97,7 @@ import RiskMonitoring from './components/global/RiskMonitoring';
 const pageComponents: Record<string, React.ComponentType> = {
   dashboard: Dashboard,
   'growth-flywheel': GrowthFlywheel,
+  'ai-ready': AIReady,
   // 网站管理中心
   content: ContentManagement,
   products: ProductManagement,
